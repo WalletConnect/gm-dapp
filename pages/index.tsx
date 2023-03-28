@@ -3,6 +3,7 @@ import AuthClient, { generateNonce } from "@walletconnect/auth-client";
 import { Web3Modal } from "@web3modal/standalone";
 import type { NextPage } from "next";
 import { useCallback, useEffect, useState } from "react";
+import { PROJECT_METADATA } from "../utils/constants";
 import DefaultView from "../views/DefaultView";
 import SignedInView from "../views/SignedInView";
 
@@ -47,12 +48,7 @@ const Home: NextPage = () => {
       relayUrl:
         process.env.NEXT_PUBLIC_RELAY_URL || "wss://relay.walletconnect.com",
       projectId,
-      metadata: {
-        name: "react-dapp-auth",
-        description: "React Example Dapp for Auth",
-        url: window.location.host,
-        icons: [],
-      },
+      metadata: PROJECT_METADATA,
     })
       .then((authClient) => {
         setClient(authClient);

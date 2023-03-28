@@ -1,6 +1,6 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { version } from "@walletconnect/auth-client/package.json";
+import { version } from "@walletconnect/push-client/package.json";
 import {
   ChakraProvider,
   Box,
@@ -50,7 +50,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                   src="/wc-bg.png"
                   alt="WC"
                 ></Image>
-                <span>V{version}</span>
+                <span>v{version}</span>
               </Flex>
             </Flex>
           </GridItem>
