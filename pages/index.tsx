@@ -2,7 +2,9 @@ import { Box } from "@chakra-ui/react";
 import AuthClient, { generateNonce } from "@walletconnect/auth-client";
 import { Web3Modal } from "@web3modal/standalone";
 import type { NextPage } from "next";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
+
+import { PushContext } from "../contexts/PushContext";
 import { PROJECT_METADATA } from "../utils/constants";
 import DefaultView from "../views/DefaultView";
 import SignedInView from "../views/SignedInView";
@@ -20,14 +22,14 @@ const web3Modal = new Web3Modal({
 });
 
 const Home: NextPage = () => {
-  const [client, setClient] = useState<AuthClient | null>();
+  const { core, authClient, setAuthClient } = useContext(PushContext);
   const [hasInitialized, setHasInitialized] = useState(false);
   const [uri, setUri] = useState<string>("");
   const [address, setAddress] = useState<string>("");
 
   const onSignIn = useCallback(() => {
-    if (!client) return;
-    client
+    if (!authClient) return;
+    authClient
       .request({
         aud: window.location.href,
         domain: window.location.hostname.split(".").slice(-2).join("."),
@@ -41,25 +43,27 @@ const Home: NextPage = () => {
           setUri(uri);
         }
       });
-  }, [client, setUri]);
+  }, [authClient, setUri]);
 
   useEffect(() => {
-    AuthClient.init({
-      relayUrl:
-        process.env.NEXT_PUBLIC_RELAY_URL || "wss://relay.walletconnect.com",
-      projectId,
-      metadata: PROJECT_METADATA,
-    })
-      .then((authClient) => {
-        setClient(authClient);
-        setHasInitialized(true);
+    if (core) {
+      AuthClient.init({
+        relayUrl:
+          process.env.NEXT_PUBLIC_RELAY_URL || "wss://relay.walletconnect.com",
+        projectId,
+        metadata: PROJECT_METADATA,
       })
-      .catch(console.error);
-  }, []);
+        .then((authClient) => {
+          setAuthClient(authClient);
+          setHasInitialized(true);
+        })
+        .catch(console.error);
+    }
+  }, [core, setAuthClient]);
 
   useEffect(() => {
-    if (!client) return;
-    client.on("auth_response", ({ params, topic }) => {
+    if (!authClient) return;
+    authClient.on("auth_response", ({ params, topic }) => {
       if (topic) {
         localStorage.setItem("wc_pairingTopic", topic);
       }
@@ -73,7 +77,7 @@ const Home: NextPage = () => {
       }
       setAddress(params.result.p.iss.split(":")[4]);
     });
-  }, [client]);
+  }, [authClient]);
 
   const [view, changeView] = useState<"default" | "qr" | "signedIn">("default");
 

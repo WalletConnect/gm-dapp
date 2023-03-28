@@ -1,22 +1,23 @@
 import { SunIcon } from "@chakra-ui/icons";
 import { Button, useColorModeValue, useToast } from "@chakra-ui/react";
 import { DappClient } from "@walletconnect/push-client";
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useCallback, useContext, useEffect, useState } from "react";
 import { PROJECT_METADATA } from "../utils/constants";
+import { PushContext } from "../contexts/PushContext";
 
-// Get projectID at https://cloud.walletconnect.com
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 if (!projectId) {
   throw new Error("You need to provide NEXT_PUBLIC_PROJECT_ID env variable");
 }
+
 interface IPushSubscriptionProps {
   address: string;
 }
 
 const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
+  const { core, setPushClient, pushClient } = useContext(PushContext);
   const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
   const [isSubscribing, setIsSubscribing] = useState<boolean>(false);
-  const [pushClient, setPushClient] = useState<DappClient>();
   const toast = useToast();
 
   const gmBtnTextColor = useColorModeValue("gray.800", "gray.100");
@@ -29,16 +30,23 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
         throw new Error("Push Client not initialized");
       }
 
-      const pairingTopic = localStorage.getItem("wc_pairingTopic");
-      if (!pairingTopic) {
+      // Resolve known pairings from the Core's Pairing API.
+      const pairings = pushClient.core.pairing.getPairings();
+      if (!pairings?.length) {
+        throw new Error("No pairings found");
+      }
+
+      // Use the latest pairing.
+      const latestPairing = pairings[pairings.length - 1];
+      if (!latestPairing?.topic) {
         throw new Error("Subscription failed", {
           cause: "pairingTopic is missing",
         });
       }
 
       const pushTopic = await pushClient.request({
-        account: address,
-        pairingTopic,
+        account: `eip155:1:${address}`,
+        pairingTopic: latestPairing.topic,
       });
 
       if (!pushTopic?.id) {
@@ -46,13 +54,10 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
           cause: "Push request failed",
         });
       }
-      setIsSubscribing(false);
-      setIsSubscribed(true);
       toast({
-        status: "success",
-        title: "Subscribed",
-        colorScheme: "whatsapp",
-        description: "You successfully subscribed to gm notification",
+        status: "info",
+        title: "Subscription proposal",
+        description: "The subscription request has been sent to your wallet",
       });
     } catch (error) {
       setIsSubscribing(false);
@@ -65,20 +70,45 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
         });
       }
     }
-  }, [setIsSubscribed, toast, pushClient, address]);
+  }, [toast, pushClient, address]);
 
-  const handleUnsubscribe = useCallback(() => {
-    setIsSubscribed(false);
-    toast({
-      status: "error",
-      title: "Unsubscribed",
-      description: "You unsubscribed from gm notification",
-    });
-  }, [setIsSubscribed, toast]);
+  const handleUnsubscribe = useCallback(async () => {
+    try {
+      if (!pushClient) {
+        throw new Error("Push Client not initialized");
+      }
+      const pushSubscriptions = pushClient.getActiveSubscriptions();
+      const foundSubscription = Object.values(pushSubscriptions).find(
+        (sub) => sub.metadata.url === PROJECT_METADATA.url
+      );
+
+      if (foundSubscription) {
+        await pushClient?.deleteSubscription({
+          topic: foundSubscription.topic,
+        });
+
+        setIsSubscribed(false);
+        toast({
+          status: "error",
+          title: "Unsubscribed",
+          description: "You unsubscribed from gm notification",
+        });
+      }
+    } catch (error) {
+      console.error({ unsubscribeError: error });
+      if (error instanceof Error) {
+        toast({
+          status: "error",
+          title: error.message,
+          description: error.cause as string,
+        });
+      }
+    }
+  }, [setIsSubscribed, toast, pushClient]);
 
   useEffect(() => {
     async function initPushClient() {
-      if (!address) {
+      if (!address || !core) {
         return;
       }
       try {
@@ -90,6 +120,16 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
             "wss://relay.walletconnect.com",
         });
 
+        const pushSubscriptions = client.getActiveSubscriptions();
+        if (
+          pushSubscriptions &&
+          Object.values(pushSubscriptions)
+            .map((sub) => sub.metadata.url)
+            .includes(PROJECT_METADATA.url)
+        ) {
+          setIsSubscribed(true);
+        }
+
         setPushClient(client);
       } catch (error) {
         if (error instanceof Error) {
@@ -98,13 +138,40 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
             title: "An error occurred initializing the Push Client",
             description: error.message,
           });
-          setPushClient(undefined);
         }
       }
     }
 
     initPushClient();
-  }, [toast, address]);
+  }, [toast, address, core, setPushClient]);
+
+  useEffect(() => {
+    if (!pushClient) {
+      return;
+    }
+    pushClient.on("push_response", (event) => {
+      if (event.params.error) {
+        setIsSubscribed(false);
+        setIsSubscribing(false);
+        console.error("Error on `push_response`:", event.params.error);
+        toast({
+          status: "error",
+          title: "Error on `push_response`",
+          description: event.params.error.message,
+        });
+      } else {
+        setIsSubscribed(true);
+        setIsSubscribing(false);
+        console.log("Established PushSubscription:", event.params.subscription);
+        toast({
+          status: "success",
+          colorScheme: "whatsapp",
+          title: "Established PushSubscription",
+          description: `${event.params.subscription?.account} successfully subscribed`,
+        });
+      }
+    });
+  }, [pushClient, toast]);
 
   return isSubscribed ? (
     <Button
