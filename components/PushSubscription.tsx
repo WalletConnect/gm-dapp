@@ -113,6 +113,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
       }
       try {
         const client = await DappClient.init({
+          // core,
           projectId,
           metadata: PROJECT_METADATA,
           relayUrl:

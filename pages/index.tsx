@@ -48,6 +48,7 @@ const Home: NextPage = () => {
   useEffect(() => {
     if (core) {
       AuthClient.init({
+        // core,
         relayUrl:
           process.env.NEXT_PUBLIC_RELAY_URL || "wss://relay.walletconnect.com",
         projectId,
