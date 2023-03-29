@@ -8,14 +8,23 @@ import {
   Grid,
   GridItem,
   Image,
+  Spinner,
 } from "@chakra-ui/react";
 import ThemeSwitcher from "../components/ThemeSwitcher";
-import PushProvider from "../contexts/PushProvider";
+import dynamic from "next/dynamic";
+import useInitialization from "../hooks/useInitialization";
+
+// const PushProvider = dynamic(() => import("../contexts/PushProvider"), {
+//   ssr: false,
+// });
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const { initialized } = useInitialization();
+  console.log({ initialized });
   return (
+    // <PushProvider>
     <ChakraProvider>
-      <PushProvider>
+      {initialized ? (
         <Box
           width="100vw"
           style={{ width: "100vw", height: "100vh" }}
@@ -64,8 +73,11 @@ function MyApp({ Component, pageProps }: AppProps) {
             </GridItem>
           </Grid>
         </Box>
-      </PushProvider>
+      ) : (
+        <Spinner />
+      )}
     </ChakraProvider>
+    // </PushProvider>
   );
 }
 

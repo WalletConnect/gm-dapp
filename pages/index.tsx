@@ -1,11 +1,10 @@
 import { Box } from "@chakra-ui/react";
-import AuthClient, { generateNonce } from "@walletconnect/auth-client";
+import { generateNonce } from "@walletconnect/auth-client";
 import { Web3Modal } from "@web3modal/standalone";
 import type { NextPage } from "next";
 import { useCallback, useContext, useEffect, useState } from "react";
+import { authClient } from "../utils/clients";
 
-import { PushContext } from "../contexts/PushContext";
-import { PROJECT_METADATA } from "../utils/constants";
 import DefaultView from "../views/DefaultView";
 import SignedInView from "../views/SignedInView";
 
@@ -22,10 +21,10 @@ const web3Modal = new Web3Modal({
 });
 
 const Home: NextPage = () => {
-  const { core, authClient, setAuthClient } = useContext(PushContext);
-  const [hasInitialized, setHasInitialized] = useState(false);
   const [uri, setUri] = useState<string>("");
   const [address, setAddress] = useState<string>("");
+  // const { authClient } = useContext(PushContext);
+  const [view, changeView] = useState<"default" | "qr" | "signedIn">("default");
 
   const onSignIn = useCallback(() => {
     if (!authClient) return;
@@ -43,31 +42,12 @@ const Home: NextPage = () => {
           setUri(uri);
         }
       });
-  }, [authClient, setUri]);
-
-  useEffect(() => {
-    if (core) {
-      AuthClient.init({
-        // core,
-        relayUrl:
-          process.env.NEXT_PUBLIC_RELAY_URL || "wss://relay.walletconnect.com",
-        projectId,
-        metadata: PROJECT_METADATA,
-      })
-        .then((authClient) => {
-          setAuthClient(authClient);
-          setHasInitialized(true);
-        })
-        .catch(console.error);
-    }
-  }, [core, setAuthClient]);
+  }, [setUri]);
 
   useEffect(() => {
     if (!authClient) return;
-    authClient.on("auth_response", ({ params, topic }) => {
-      if (topic) {
-        localStorage.setItem("wc_pairingTopic", topic);
-      }
+    authClient.on("auth_response", ({ params }) => {
+      console.log({ authResponseParams: params });
       if ("code" in params) {
         console.error(params);
         return;
@@ -78,9 +58,7 @@ const Home: NextPage = () => {
       }
       setAddress(params.result.p.iss.split(":")[4]);
     });
-  }, [authClient]);
-
-  const [view, changeView] = useState<"default" | "qr" | "signedIn">("default");
+  }, []);
 
   useEffect(() => {
     async function handleOpenModal() {
@@ -103,9 +81,7 @@ const Home: NextPage = () => {
 
   return (
     <Box width="100%" height="100%">
-      {view === "default" && (
-        <DefaultView onClick={onSignIn} hasInitialized={hasInitialized} />
-      )}
+      {view === "default" && <DefaultView onClick={onSignIn} />}
       {view === "signedIn" && <SignedInView address={address} />}
     </Box>
   );

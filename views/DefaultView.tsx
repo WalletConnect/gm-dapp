@@ -1,9 +1,11 @@
-import { Box, Button, Flex, Heading, Image, position } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Image } from "@chakra-ui/react";
+import { useContext } from "react";
 
 const DefaultView: React.FC<{
   onClick: () => void;
-  hasInitialized: boolean;
-}> = ({ onClick, hasInitialized }) => {
+}> = ({ onClick }) => {
+  // const { initialized } = useContext(PushContext);
+
   return (
     <Box>
       <Box position={{ position: "relative" }}>
@@ -40,13 +42,11 @@ const DefaultView: React.FC<{
           onClick={onClick}
           borderRadius={"16px"}
           background="#3396FF"
-          disabled={!hasInitialized}
+          // disabled={!initialized}
         >
           <Flex gap="1em">
             <Image src="/wc.png" fit="scale-down" alt="WC" />
-            <span style={{ color: "white" }}>
-              {hasInitialized ? "WalletConnect" : "Initializing..."}
-            </span>
+            <span style={{ color: "white" }}>WalletConnect</span>
           </Flex>
         </Button>
       </Flex>

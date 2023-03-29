@@ -1,9 +1,8 @@
 import { SunIcon } from "@chakra-ui/icons";
 import { Button, useColorModeValue, useToast } from "@chakra-ui/react";
-import { DappClient } from "@walletconnect/push-client";
 import React, { FC, useCallback, useContext, useEffect, useState } from "react";
 import { PROJECT_METADATA } from "../utils/constants";
-import { PushContext } from "../contexts/PushContext";
+import { authClient, pushClient } from "../utils/clients";
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 if (!projectId) {
@@ -15,10 +14,10 @@ interface IPushSubscriptionProps {
 }
 
 const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
-  const { core, setPushClient, pushClient } = useContext(PushContext);
   const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
   const [isSubscribing, setIsSubscribing] = useState<boolean>(false);
   const toast = useToast();
+  // const { pushClient } = useContext(PushContext);
 
   const gmBtnTextColor = useColorModeValue("gray.800", "gray.100");
 
@@ -35,6 +34,8 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
       if (!pairings?.length) {
         throw new Error("No pairings found");
       }
+
+      console.log({ pairings });
 
       // Use the latest pairing.
       const latestPairing = pairings[pairings.length - 1];
@@ -70,7 +71,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
         });
       }
     }
-  }, [toast, pushClient, address]);
+  }, [toast, address]);
 
   const handleUnsubscribe = useCallback(async () => {
     try {
@@ -104,53 +105,12 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
         });
       }
     }
-  }, [setIsSubscribed, toast, pushClient]);
+  }, [setIsSubscribed, toast]);
 
   useEffect(() => {
-    async function initPushClient() {
-      if (!address || !core) {
-        return;
-      }
-      try {
-        const client = await DappClient.init({
-          // core,
-          projectId,
-          metadata: PROJECT_METADATA,
-          relayUrl:
-            process.env.NEXT_PUBLIC_RELAY_URL ||
-            "wss://relay.walletconnect.com",
-        });
-
-        const pushSubscriptions = client.getActiveSubscriptions();
-        if (
-          pushSubscriptions &&
-          Object.values(pushSubscriptions)
-            .map((sub) => sub.metadata.url)
-            .includes(PROJECT_METADATA.url)
-        ) {
-          setIsSubscribed(true);
-        }
-
-        setPushClient(client);
-      } catch (error) {
-        if (error instanceof Error) {
-          toast({
-            status: "error",
-            title: "An error occurred initializing the Push Client",
-            description: error.message,
-          });
-        }
-      }
-    }
-
-    initPushClient();
-  }, [toast, address, core, setPushClient]);
-
-  useEffect(() => {
-    if (!pushClient) {
-      return;
-    }
+    if (!pushClient) return;
     pushClient.on("push_response", (event) => {
+      console.log({ pushEvent: event });
       if (event.params.error) {
         setIsSubscribed(false);
         setIsSubscribing(false);
@@ -172,7 +132,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
         });
       }
     });
-  }, [pushClient, toast]);
+  }, [toast]);
 
   return isSubscribed ? (
     <Button
