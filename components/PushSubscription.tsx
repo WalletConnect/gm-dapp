@@ -1,5 +1,5 @@
 import { SunIcon } from "@chakra-ui/icons";
-import { Button, useColorModeValue, useToast } from "@chakra-ui/react";
+import { Button, Flex, useColorModeValue, useToast } from "@chakra-ui/react";
 import { DappClient } from "@walletconnect/push-client";
 import React, { FC, useCallback, useContext, useEffect, useState } from "react";
 import { PROJECT_METADATA } from "../utils/constants";
@@ -11,10 +11,10 @@ if (!projectId) {
 }
 
 interface IPushSubscriptionProps {
-  address: string;
+  account: string;
 }
 
-const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
+const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
   const { setPushClient, pushClient } = useContext(PushContext);
   const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
   const [isSubscribing, setIsSubscribing] = useState<boolean>(false);
@@ -45,7 +45,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
       }
 
       const pushTopic = await pushClient.request({
-        account: `eip155:1:${address}`,
+        account,
         pairingTopic: latestPairing.topic,
       });
 
@@ -70,7 +70,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
         });
       }
     }
-  }, [toast, pushClient, address]);
+  }, [toast, pushClient, account]);
 
   const handleUnsubscribe = useCallback(async () => {
     try {
@@ -106,9 +106,58 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
     }
   }, [setIsSubscribed, toast, pushClient]);
 
+  const handleSendGm = useCallback(async () => {
+    try {
+      if (!pushClient) {
+        throw new Error("Push Client not initialized");
+      }
+      // Construct the payload, including the target `accounts`
+      // that should receive the push notification.
+      const notificationPayload = {
+        accounts: [account],
+        notification: {
+          title: "gm!",
+          body: "This is a test gm notification",
+          // href already contains the trailing slash
+          icon: `${window.location.href}gmMemesArtwork.png`,
+          url: window.location.href,
+        },
+      };
+
+      // We can construct the URL to the Cast server using the `castUrl` property
+      // of the `PushDappClient` (which will be `https://cast.walletconnect.com` by default),
+      // together with our Project ID.
+      const result = await fetch(`${pushClient.castUrl}/${projectId}/notify`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(notificationPayload),
+      });
+
+      const gmRes = await result.json(); // { "sent": ["eip155:1:0xafeb..."], "failed": [], "not_found": [] }
+      const isSuccessfulGm = gmRes.sent.includes(account);
+      toast({
+        status: isSuccessfulGm ? "success" : "error",
+        title: isSuccessfulGm
+          ? `gm notification sent to ${account}`
+          : "gm notification failed",
+      });
+    } catch (error) {
+      console.error({ sendGmError: error });
+      if (error instanceof Error) {
+        toast({
+          status: "error",
+          title: error.message,
+          description: error.cause as string,
+        });
+      }
+    }
+  }, [pushClient, toast, account]);
+
   useEffect(() => {
     async function initPushClient() {
-      if (!address) {
+      if (!account) {
         return;
       }
       try {
@@ -144,7 +193,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
     }
 
     initPushClient();
-  }, [toast, address, setPushClient]);
+  }, [toast, account, setPushClient]);
 
   useEffect(() => {
     if (!pushClient) {
@@ -167,7 +216,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
             "content-type": "application/json",
           },
           body: JSON.stringify({
-            account: `eip155:1:${address}`,
+            account,
           }),
         })
           .then(async (data) => data.json())
@@ -200,24 +249,43 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
           });
       }
     });
-  }, [pushClient, toast, address]);
+  }, [pushClient, toast, account]);
 
   return isSubscribed ? (
-    <Button
-      size="lg"
-      fontWeight="bold"
-      border="solid 1px rgba(255, 0, 0, 0.2)"
-      borderRadius={"16px"}
-      onClick={handleUnsubscribe}
-      color="red.400"
-      _hover={{
-        bg: "red.300",
-        border: "solid 1px red",
-        color: gmBtnTextColor,
-      }}
-    >
-      Unsubscribe from gm
-    </Button>
+    <Flex flexDirection="column" gap={2}>
+      <Button
+        leftIcon={<SunIcon />}
+        rightIcon={<SunIcon />}
+        size="lg"
+        fontWeight="bold"
+        onClick={handleSendGm}
+        border="solid 1px green"
+        color={gmBtnTextColor}
+        bg="#2BEE6C"
+        borderRadius={"16px"}
+        _hover={{
+          bg: "yellow.300",
+          border: "solid 1px yellowgreen",
+        }}
+      >
+        Send me a gm
+      </Button>
+      <Button
+        size="lg"
+        fontWeight="bold"
+        border="solid 1px rgba(255, 0, 0, 0.2)"
+        borderRadius={"16px"}
+        onClick={handleUnsubscribe}
+        color="red.400"
+        _hover={{
+          bg: "red.300",
+          border: "solid 1px red",
+          color: gmBtnTextColor,
+        }}
+      >
+        Unsubscribe from gm
+      </Button>
+    </Flex>
   ) : (
     <Button
       leftIcon={<SunIcon />}

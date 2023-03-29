@@ -80,7 +80,7 @@ const SignedInView: React.FC<{ address: string }> = ({ address }) => {
           <Text fontWeight="800" fontSize={"1.5em"}>
             {truncate(address, 12, { position: 7 })}
           </Text>
-          <PushSubscription address={address} />
+          <PushSubscription account={`eip155:1:${address}`} />
         </Flex>
         <Divider />
         <Flex
