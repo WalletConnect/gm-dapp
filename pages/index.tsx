@@ -22,7 +22,7 @@ const web3Modal = new Web3Modal({
 });
 
 const Home: NextPage = () => {
-  const { core, authClient, setAuthClient } = useContext(PushContext);
+  const { authClient, setAuthClient } = useContext(PushContext);
   const [hasInitialized, setHasInitialized] = useState(false);
   const [uri, setUri] = useState<string>("");
   const [address, setAddress] = useState<string>("");
@@ -46,21 +46,19 @@ const Home: NextPage = () => {
   }, [authClient, setUri]);
 
   useEffect(() => {
-    if (core) {
-      AuthClient.init({
-        // core,
-        relayUrl:
-          process.env.NEXT_PUBLIC_RELAY_URL || "wss://relay.walletconnect.com",
-        projectId,
-        metadata: PROJECT_METADATA,
+    AuthClient.init({
+      // core,
+      relayUrl:
+        process.env.NEXT_PUBLIC_RELAY_URL || "wss://relay.walletconnect.com",
+      projectId,
+      metadata: PROJECT_METADATA,
+    })
+      .then((authClient) => {
+        setAuthClient(authClient);
+        setHasInitialized(true);
       })
-        .then((authClient) => {
-          setAuthClient(authClient);
-          setHasInitialized(true);
-        })
-        .catch(console.error);
-    }
-  }, [core, setAuthClient]);
+      .catch(console.error);
+  }, [setAuthClient]);
 
   useEffect(() => {
     if (!authClient) return;

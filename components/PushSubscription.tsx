@@ -15,7 +15,7 @@ interface IPushSubscriptionProps {
 }
 
 const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
-  const { core, setPushClient, pushClient } = useContext(PushContext);
+  const { setPushClient, pushClient } = useContext(PushContext);
   const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
   const [isSubscribing, setIsSubscribing] = useState<boolean>(false);
   const toast = useToast();
@@ -50,13 +50,13 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
       });
 
       if (!pushTopic?.id) {
-        throw new Error("Subscription failed", {
+        throw new Error("Subscription request failed", {
           cause: "Push request failed",
         });
       }
       toast({
         status: "info",
-        title: "Subscription proposal",
+        title: "Subscription request",
         description: "The subscription request has been sent to your wallet",
       });
     } catch (error) {
@@ -108,7 +108,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
 
   useEffect(() => {
     async function initPushClient() {
-      if (!address || !core) {
+      if (!address) {
         return;
       }
       try {
@@ -144,7 +144,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
     }
 
     initPushClient();
-  }, [toast, address, core, setPushClient]);
+  }, [toast, address, setPushClient]);
 
   useEffect(() => {
     if (!pushClient) {
@@ -161,18 +161,46 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ address }) => {
           description: event.params.error.message,
         });
       } else {
-        setIsSubscribed(true);
-        setIsSubscribing(false);
-        console.log("Established PushSubscription:", event.params.subscription);
-        toast({
-          status: "success",
-          colorScheme: "whatsapp",
-          title: "Established PushSubscription",
-          description: `${event.params.subscription?.account} successfully subscribed`,
-        });
+        fetch("/api/subscribe", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify({
+            account: `eip155:1:${address}`,
+          }),
+        })
+          .then(async (data) => data.json())
+          .then((data) => {
+            if (data.success) {
+              setIsSubscribed(true);
+              setIsSubscribing(false);
+              console.log(
+                "Established PushSubscription:",
+                event.params.subscription
+              );
+              toast({
+                status: "success",
+                colorScheme: "whatsapp",
+                title: "Established PushSubscription",
+                description: `${event.params.subscription?.account} successfully subscribed`,
+              });
+            } else {
+              throw new Error(data.message);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+            setIsSubscribed(false);
+            setIsSubscribing(false);
+            toast({
+              status: "error",
+              title: e.message,
+            });
+          });
       }
     });
-  }, [pushClient, toast]);
+  }, [pushClient, toast, address]);
 
   return isSubscribed ? (
     <Button
