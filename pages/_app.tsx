@@ -10,11 +10,7 @@ import {
   Image,
 } from "@chakra-ui/react";
 import ThemeSwitcher from "../components/ThemeSwitcher";
-import dynamic from "next/dynamic";
-
-const PushProvider = dynamic(() => import("../contexts/PushProvider"), {
-  ssr: false,
-});
+import PushProvider from "../contexts/PushProvider";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

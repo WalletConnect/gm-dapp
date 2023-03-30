@@ -2,7 +2,6 @@ import { SunIcon } from "@chakra-ui/icons";
 import { Button, Flex, useColorModeValue, useToast } from "@chakra-ui/react";
 import React, { FC, useCallback, useContext, useEffect, useState } from "react";
 import { PushContext } from "../contexts/PushContext";
-import PushProvider from "../contexts/PushProvider";
 import { PROJECT_METADATA } from "../utils/constants";
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
@@ -160,6 +159,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
       setIsSendingGm(false);
       toast({
         status: isSuccessfulGm ? "success" : "error",
+        colorScheme: isSuccessfulGm ? "whatsapp" : "red",
         title: isSuccessfulGm
           ? `gm notification sent to ${account}`
           : "gm notification failed",
