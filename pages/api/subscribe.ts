@@ -1,3 +1,4 @@
+import { eq } from "drizzle-orm/expressions";
 import { drizzle } from "drizzle-orm/node-postgres";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Pool } from "pg";
@@ -31,6 +32,14 @@ export default async function handler(
     return res.status(400).json({ success: false });
   }
 
+  const existingUser = await db
+    .select()
+    .from(gmUsers)
+    .where(eq(gmUsers.account, account));
+
+  if (existingUser.length > 1) {
+    return res.status(200).json({ success: true });
+  }
   const newSubscriber = {
     account,
   };
