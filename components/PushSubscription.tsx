@@ -17,7 +17,9 @@ interface IPushSubscriptionProps {
 const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
   const { setPushClient, pushClient } = useContext(PushContext);
   const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
+  const [isSendingGm, setIsSendingGm] = useState<boolean>(false);
   const [isSubscribing, setIsSubscribing] = useState<boolean>(false);
+  const [isUnsubscribing, setIsUnsubscribing] = useState<boolean>(false);
   const toast = useToast();
 
   const gmBtnTextColor = useColorModeValue("gray.800", "gray.100");
@@ -73,6 +75,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
   }, [toast, pushClient, account]);
 
   const handleUnsubscribe = useCallback(async () => {
+    setIsUnsubscribing(true);
     try {
       if (!pushClient) {
         throw new Error("Push Client not initialized");
@@ -83,10 +86,25 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
       );
 
       if (foundSubscription) {
+        const unsubscribeRawRes = await fetch("/api/unsubscribe", {
+          method: "DELETE",
+          body: JSON.stringify({
+            account,
+          }),
+          headers: {
+            "content-type": "application/json",
+          },
+        });
+        const unsubscribeRes = await unsubscribeRawRes.json();
+        const isSuccess = unsubscribeRes.success;
+        if (!isSuccess) {
+          throw new Error("Failed to unsubscribe!");
+        }
         await pushClient?.deleteSubscription({
           topic: foundSubscription.topic,
         });
 
+        setIsUnsubscribing(false);
         setIsSubscribed(false);
         toast({
           status: "error",
@@ -95,6 +113,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
         });
       }
     } catch (error) {
+      setIsUnsubscribing(false);
       console.error({ unsubscribeError: error });
       if (error instanceof Error) {
         toast({
@@ -104,9 +123,10 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
         });
       }
     }
-  }, [setIsSubscribed, toast, pushClient]);
+  }, [setIsSubscribed, toast, pushClient, account]);
 
   const handleSendGm = useCallback(async () => {
+    setIsSendingGm(true);
     try {
       if (!pushClient) {
         throw new Error("Push Client not initialized");
@@ -137,6 +157,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
 
       const gmRes = await result.json(); // { "sent": ["eip155:1:0xafeb..."], "failed": [], "not_found": [] }
       const isSuccessfulGm = gmRes.sent.includes(account);
+      setIsSendingGm(false);
       toast({
         status: isSuccessfulGm ? "success" : "error",
         title: isSuccessfulGm
@@ -144,6 +165,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
           : "gm notification failed",
       });
     } catch (error) {
+      setIsSendingGm(false);
       console.error({ sendGmError: error });
       if (error instanceof Error) {
         toast({
@@ -261,6 +283,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
         onClick={handleSendGm}
         border="solid 1px green"
         color={gmBtnTextColor}
+        isDisabled={isSendingGm}
         bg="#2BEE6C"
         borderRadius={"16px"}
         _hover={{
@@ -276,6 +299,9 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
         border="solid 1px rgba(255, 0, 0, 0.2)"
         borderRadius={"16px"}
         onClick={handleUnsubscribe}
+        isLoading={isUnsubscribing}
+        disabled={isUnsubscribing}
+        loadingText="Unsubscribing.."
         color="red.400"
         _hover={{
           bg: "red.300",
