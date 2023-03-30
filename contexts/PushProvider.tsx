@@ -1,8 +1,7 @@
-import { AuthClient } from "@walletconnect/auth-client/dist/types/client";
-import { DappClient } from "@walletconnect/push-client";
-import { ReactNode, useCallback, useReducer } from "react";
-import { initialPushState, PushContext } from "./PushContext";
-import { PushReducer } from "./PushReducer";
+import { ReactNode } from "react";
+import useInitialization from "../hooks/useInitialization";
+import { authClient, pushClient } from "../utils/clients";
+import { PushContext } from "./PushContext";
 
 // Get projectID at https://cloud.walletconnect.com
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
@@ -15,24 +14,11 @@ interface IPushProviderProps {
 }
 
 const PushProvider: React.FC<IPushProviderProps> = ({ children }) => {
-  const [state, dispatch] = useReducer(PushReducer, initialPushState);
-
-  const setAuthClient = useCallback((authClient: AuthClient) => {
-    dispatch({
-      type: "SET_AUTH_CLIENT",
-      payload: authClient,
-    });
-  }, []);
-
-  const setPushClient = useCallback((pushClient: DappClient) => {
-    dispatch({
-      type: "SET_PUSH_CLIENT",
-      payload: pushClient,
-    });
-  }, []);
+  // const { initialized, authClient, pushClient } = useClients();
+  const { initialized } = useInitialization();
 
   return (
-    <PushContext.Provider value={{ ...state, setAuthClient, setPushClient }}>
+    <PushContext.Provider value={{ initialized, authClient, pushClient }}>
       {children}
     </PushContext.Provider>
   );
