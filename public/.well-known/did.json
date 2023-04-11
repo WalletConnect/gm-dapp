@@ -1,0 +1,20 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/did/v1",
+    "https://w3id.org/security/suites/jws-2020/v1"
+  ],
+  "id": "did:web:gm.walletconnect.com",
+  "verificationMethod": [
+    {
+      "id": "did:web:gm.walletconnect.com#key-0",
+      "type": "JsonWebKey2020",
+      "controller": "did:web:gm.walletconnect.com",
+      "publicKeyJwk": {
+        "crv": "X25519",
+        "x": "Wrc5_UlRl72s8ODnJKO8TkfoNM5ymhFkaC8rhEQbqQ8",
+        "kty": "OKP"
+      }
+    }
+  ],
+  "keyAgreement": ["did:web:gm.walletconnect.com#key-0"]
+}
