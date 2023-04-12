@@ -23,6 +23,19 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
 
   const gmBtnTextColor = useColorModeValue("gray.800", "gray.100");
 
+  useEffect(() => {
+    if (!pushClient || !account) {
+      return;
+    }
+    const activeSubscriptions = pushClient?.getActiveSubscriptions();
+
+    if (
+      Object.values(activeSubscriptions).some((sub) => sub.account === account)
+    ) {
+      setIsSubscribed(true);
+    }
+  }, [pushClient, account]);
+
   const handleSubscribe = useCallback(async () => {
     setIsSubscribing(true);
 

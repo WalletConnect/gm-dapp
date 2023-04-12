@@ -37,7 +37,7 @@ export default async function handler(
     .from(gmUsers)
     .where(eq(gmUsers.account, account));
 
-  if (existingUser.length > 1) {
+  if (existingUser.length > 0) {
     return res.status(200).json({ success: true });
   }
   const newSubscriber = {
