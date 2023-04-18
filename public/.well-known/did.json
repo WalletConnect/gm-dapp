@@ -10,9 +10,9 @@
       "type": "JsonWebKey2020",
       "controller": "did:web:gm.walletconnect.com",
       "publicKeyJwk": {
+        "kty": "OKP",
         "crv": "X25519",
-        "x": "Wrc5_UlRl72s8ODnJKO8TkfoNM5ymhFkaC8rhEQbqQ8",
-        "kty": "OKP"
+        "x": "HfrEgpe_0h4R9Sw8fEtnbOy1Iz5HuFWFA8RiAS7tNV0"
       }
     }
   ],
