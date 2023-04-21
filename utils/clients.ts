@@ -1,6 +1,8 @@
 import AuthClient from "@walletconnect/auth-client";
 import { Core } from "@walletconnect/core";
 import { DappClient } from "@walletconnect/push-client";
+import SignClient from "@walletconnect/sign-client";
+
 import { PROJECT_METADATA } from "./constants";
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
@@ -13,6 +15,19 @@ const core = new Core({
 
 export let authClient: AuthClient;
 export let pushClient: DappClient;
+export let signClient: SignClient;
+
+export async function createSignClient() {
+  if (!projectId) {
+    throw new Error("You need to provide NEXT_PUBLIC_PROJECT_ID env variable");
+  }
+  signClient = await SignClient.init({
+    projectId,
+    core,
+    relayUrl,
+    metadata: PROJECT_METADATA,
+  });
+}
 
 export async function createAuthClient() {
   if (!projectId) {

@@ -18,14 +18,15 @@ if (!projectId) {
 const web3Modal = new Web3Modal({
   projectId,
   walletConnectVersion: 2,
+  standaloneChains: ["eip155:1"],
 });
 
 const Home: NextPage = () => {
-  const { authClient } = useContext(PushContext);
-  const [uri, setUri] = useState<string>("");
+  const { authClient, signClient } = useContext(PushContext);
+  const [authUri, setAuthUri] = useState<string>("");
   const [address, setAddress] = useState<string>("");
 
-  const onSignIn = useCallback(() => {
+  const onSignInWithAuth = useCallback(() => {
     if (!authClient) return;
     authClient
       .request({
@@ -38,17 +39,50 @@ const Home: NextPage = () => {
       })
       .then(({ uri }) => {
         if (uri) {
-          setUri(uri);
+          setAuthUri(uri);
         }
       });
-  }, [setUri, authClient]);
+  }, [setAuthUri, authClient]);
+
+  const onSignInWithSign = useCallback(async () => {
+    if (!signClient) return;
+    try {
+      const signRes = await signClient.connect({
+        // Optionally: pass a known prior pairing (e.g. from `signClient.core.pairing.getPairings()`) to skip the `uri` step.
+        // Provide the namespaces and chains (e.g. `eip155` for EVM-based chains) we want to use in this session.
+        requiredNamespaces: {
+          eip155: {
+            methods: [
+              "eth_sendTransaction",
+              "eth_signTransaction",
+              "eth_sign",
+              "personal_sign",
+              "eth_signTypedData",
+            ],
+            chains: ["eip155:1"],
+            events: ["chainChanged", "accountsChanged"],
+          },
+        },
+      });
+      const { uri, approval } = signRes;
+      if (uri) {
+        web3Modal.openModal({ uri });
+        // Await session approval from the wallet.
+        const session = await approval();
+        // Handle the returned session (e.g. update UI to "connected" state).
+        // * You will need to create this function *
+        setAddress(session.namespaces.eip155.accounts[0].split(":")[4]);
+        // Close the QRCode modal in case it was open.
+        web3Modal.closeModal();
+      }
+    } catch (error) {
+      console.log({ error });
+    }
+  }, [signClient]);
 
   useEffect(() => {
     if (!authClient) return;
     authClient.on("auth_response", ({ params, topic }) => {
-      if (topic) {
-        localStorage.setItem("wc_pairingTopic", topic);
-      }
       if ("code" in params) {
         console.error(params);
         return;
@@ -61,19 +95,39 @@ const Home: NextPage = () => {
     });
   }, [authClient]);
 
+  useEffect(() => {
+    if (!signClient) return;
+    signClient.on("session_event", ({ id, topic, params }) => {
+      // Handle session events, such as "chainChanged", "accountsChanged", etc.
+    });
+
+    signClient.on("session_update", ({ topic, params }) => {
+      const { namespaces } = params;
+      const _session = signClient.session.get(topic);
+      // Overwrite the `namespaces` of the existing session with the incoming one.
+      const updatedSession = { ..._session, namespaces };
+      // Integrate the updated session state into your dapp state.
+      // setAddress(_session.controller);
+    });
+
+    signClient.on("session_delete", () => {
+      // Session was deleted -> reset the dapp state, clean up from user session, etc.
+    });
+  }, [signClient]);
+
   const [view, changeView] = useState<"default" | "qr" | "signedIn">("default");
 
   useEffect(() => {
     async function handleOpenModal() {
-      if (uri) {
+      if (authUri) {
         await web3Modal.openModal({
-          uri,
+          uri: authUri,
           standaloneChains: ["eip155:1"],
         });
       }
     }
     handleOpenModal();
-  }, [uri]);
+  }, [authUri]);
 
   useEffect(() => {
     if (address) {
@@ -84,7 +138,12 @@ const Home: NextPage = () => {
 
   return (
     <Box width="100%" height="100%">
-      {view === "default" && <DefaultView onClick={onSignIn} />}
+      {view === "default" && (
+        <DefaultView
+          handleAuth={onSignInWithAuth}
+          handleSign={onSignInWithSign}
+        />
+      )}
       {view === "signedIn" && <SignedInView address={address} />}
     </Box>
   );

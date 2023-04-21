@@ -25,10 +25,17 @@ const SignedInView: React.FC<{ address: string }> = ({ address }) => {
       const provider = new providers.JsonRpcProvider(
         `https://rpc.walletconnect.com/v1/?chainId=eip155:1&projectId=${process.env.NEXT_PUBLIC_PROJECT_ID}`
       );
-      const avatar = await provider.getAvatar(address);
-      const balance = await provider.getBalance(address);
-      setAvatar(avatar);
-      setBalance(balance.toNumber());
+
+      try {
+        const avatar = await provider.getAvatar(address);
+        const balance = await provider.getBalance(address);
+        setAvatar(avatar);
+        setBalance(balance.toNumber());
+      } catch (error) {
+        setBalance(0);
+        console.log({ error });
+      }
+
       setLoading(false);
     };
     if (address) {

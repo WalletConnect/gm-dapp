@@ -16,6 +16,8 @@
     "@walletconnect/auth-client": "^2.0.6",
     "@walletconnect/core": "^2.6.0",
     "@walletconnect/push-client": "^0.7.0",
+    "@walletconnect/sign-client": "^2.6.0",
+    "@walletconnect/types": "^2.6.0",
     "@web3modal/standalone": "^2.2.2",
     "drizzle-orm": "^0.23.2",
     "ethers": "^5.7.0",

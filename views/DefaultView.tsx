@@ -3,8 +3,9 @@ import { useContext } from "react";
 import { PushContext } from "../contexts/PushContext";
 
 const DefaultView: React.FC<{
-  onClick: () => void;
-}> = ({ onClick }) => {
+  handleAuth: () => void;
+  handleSign: () => void;
+}> = ({ handleAuth, handleSign }) => {
   const { initialized } = useContext(PushContext);
   return (
     <Box>
@@ -39,7 +40,7 @@ const DefaultView: React.FC<{
           minW="80%"
           paddingY="1.25em"
           fontSize={"1.25em"}
-          onClick={onClick}
+          onClick={handleAuth}
           borderRadius={"16px"}
           background="#3396FF"
           disabled={!initialized}
@@ -47,7 +48,23 @@ const DefaultView: React.FC<{
           <Flex gap="1em">
             <Image src="/wc.png" fit="scale-down" alt="WC" />
             <span style={{ color: "white" }}>
-              {initialized ? "WalletConnect" : "Initializing..."}
+              {initialized ? "WalletConnect Auth" : "Initializing..."}
+            </span>
+          </Flex>
+        </Button>
+        <Button
+          minW="80%"
+          paddingY="1.25em"
+          fontSize={"1.25em"}
+          onClick={handleSign}
+          borderRadius={"16px"}
+          background="#3396FF"
+          disabled={!initialized}
+        >
+          <Flex gap="1em">
+            <Image src="/wc.png" fit="scale-down" alt="WC" />
+            <span style={{ color: "white" }}>
+              {initialized ? "WalletConnect Sign" : "Initializing..."}
             </span>
           </Flex>
         </Button>

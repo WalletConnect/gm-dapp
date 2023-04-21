@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { createAuthClient, createPushClient } from "../utils/clients";
+import {
+  createAuthClient,
+  createPushClient,
+  createSignClient,
+} from "../utils/clients";
 
 export default function useInitialization() {
   const [initialized, setInitialized] = useState(false);
@@ -7,6 +11,7 @@ export default function useInitialization() {
   useEffect(() => {
     async function init() {
       try {
+        await createSignClient();
         await createAuthClient();
         await createPushClient();
         setInitialized(true);
