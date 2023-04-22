@@ -12,8 +12,8 @@ export default function useInitialization() {
     async function init() {
       try {
         await createSignClient();
-        await createAuthClient();
         await createPushClient();
+        await createAuthClient();
         setInitialized(true);
       } catch (err: unknown) {
         alert(err);

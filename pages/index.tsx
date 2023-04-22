@@ -71,7 +71,7 @@ const Home: NextPage = () => {
         const session = await approval();
         // Handle the returned session (e.g. update UI to "connected" state).
         // * You will need to create this function *
-        setAddress(session.namespaces.eip155.accounts[0].split(":")[4]);
+        setAddress(session.namespaces.eip155.accounts[0].split(":")[2]);
         // Close the QRCode modal in case it was open.
         web3Modal.closeModal();
       }
