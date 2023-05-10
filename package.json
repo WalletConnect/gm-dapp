@@ -19,7 +19,7 @@
     "@walletconnect/sign-client": "^2.6.0",
     "@walletconnect/types": "^2.6.0",
     "@web3modal/standalone": "^2.2.2",
-    "drizzle-orm": "^0.23.2",
+    "drizzle-orm": "^0.25.4",
     "ethers": "^5.7.0",
     "events": "^3.3.0",
     "framer-motion": "^10.10.0",

@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm/expressions";
+import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Pool } from "pg";
