@@ -30,8 +30,9 @@ export default async function handler(
   const { id, event, account, dappUrl } = req.body;
 
   console.log(
-    `[API] Webhook ${id} received event "${event}" for account ${account} on dapp ${dappUrl}`
+    `[API] Webhook ID ${id} received event "${event}" for account ${account} on dapp ${dappUrl}`
   );
+  console.log({ id, event, account, dappUrl, reqHeaders: req.headers });
 
   if (!account || !event) {
     return res.status(400).json({ success: false });
