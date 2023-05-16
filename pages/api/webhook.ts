@@ -53,6 +53,7 @@ export default async function handler(
       });
       return res.status(200).json({ success: true });
     } catch (error) {
+      console.error(`Subscribing account ${account} failed: `, error);
       if (error instanceof Error) {
         return res
           .status(500)
@@ -64,6 +65,7 @@ export default async function handler(
       await db.delete(gmUsers).where(eq(gmUsers.account, account));
       return res.status(200).json({ success: true });
     } catch (error) {
+      console.error(`Unsubscribing account ${account} failed: `, error);
       if (error instanceof Error) {
         return res
           .status(500)
