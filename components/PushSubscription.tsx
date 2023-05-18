@@ -153,6 +153,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
           // href already contains the trailing slash
           icon: `${window.location.href}gmMemesArtwork.png`,
           url: window.location.href,
+          type: "v1",
         },
       };
 
