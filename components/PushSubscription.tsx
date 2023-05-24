@@ -58,14 +58,14 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
         });
       }
 
-      const pushTopic = await pushClient.request({
+      const { id } = await pushClient.propose({
         account,
         pairingTopic: latestPairing.topic,
       });
 
-      if (!pushTopic?.id) {
+      if (!id) {
         throw new Error("Subscription request failed", {
-          cause: "Push request failed",
+          cause: "Push propose failed",
         });
       }
       toast({
@@ -112,9 +112,9 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
         if (!isSuccess) {
           throw new Error("Failed to unsubscribe!");
         }
-        await pushClient?.deleteSubscription({
-          topic: foundSubscription.topic,
-        });
+        // await pushClient?.deleteSubscription({
+        //   topic: foundSubscription.topic,
+        // });
 
         setIsUnsubscribing(false);
         setIsSubscribed(false);
