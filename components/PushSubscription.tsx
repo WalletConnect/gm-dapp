@@ -245,6 +245,16 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
           });
       }
     });
+
+    pushClient.on("push_delete", (event) => {
+      setIsSubscribed(false);
+      setIsSubscribing(false);
+      toast({
+        status: "success",
+        title: "Deleted PushSubscription",
+        description: `Deleted PushSubscription on topic ${event.topic}`,
+      });
+    });
   }, [toast, account, pushClient]);
 
   return isSubscribed ? (
@@ -266,24 +276,6 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
         }}
       >
         Send me a gm
-      </Button>
-      <Button
-        size="lg"
-        fontWeight="bold"
-        border="solid 1px rgba(255, 0, 0, 0.2)"
-        borderRadius={"16px"}
-        onClick={handleUnsubscribe}
-        isLoading={isUnsubscribing}
-        disabled={isUnsubscribing}
-        loadingText="Unsubscribing.."
-        color="red.400"
-        _hover={{
-          bg: "red.300",
-          border: "solid 1px red",
-          color: gmBtnTextColor,
-        }}
-      >
-        Unsubscribe from gm
       </Button>
     </Flex>
   ) : (

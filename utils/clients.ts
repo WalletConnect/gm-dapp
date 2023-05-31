@@ -52,4 +52,6 @@ export async function createPushClient() {
     relayUrl,
     logger: "debug",
   });
+
+  console.log("pushClient", pushClient);
 }
