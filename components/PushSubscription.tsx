@@ -93,11 +93,11 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
         throw new Error("Push Client not initialized");
       }
       const pushSubscriptions = pushClient.getActiveSubscriptions();
-      const foundSubscription = Object.values(pushSubscriptions).find(
-        (sub) => sub.metadata.url === PROJECT_METADATA.url
+      const currentSubscription = Object.values(pushSubscriptions).find(
+        (sub) => sub.account === account
       );
 
-      if (foundSubscription) {
+      if (currentSubscription) {
         const unsubscribeRawRes = await fetch("/api/unsubscribe", {
           method: "DELETE",
           body: JSON.stringify({
@@ -113,7 +113,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
           throw new Error("Failed to unsubscribe!");
         }
         await pushClient.deleteSubscription({
-          topic: foundSubscription.topic,
+          topic: currentSubscription.topic,
         });
 
         setIsUnsubscribing(false);
