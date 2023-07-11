@@ -157,10 +157,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
         },
       };
 
-      // We can construct the URL to the Cast server using the `castUrl` property
-      // of the `PushDappClient` (which will be `https://cast.walletconnect.com` by default),
-      // together with our Project ID.
-      const result = await fetch(`${pushClient.castUrl}/${projectId}/notify`, {
+      const result = await fetch("/notify", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
