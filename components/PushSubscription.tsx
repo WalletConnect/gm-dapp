@@ -2,7 +2,7 @@ import { SunIcon } from "@chakra-ui/icons";
 import { Button, Flex, useColorModeValue, useToast } from "@chakra-ui/react";
 import React, { FC, useCallback, useContext, useEffect, useState } from "react";
 import { PushContext } from "../contexts/PushContext";
-import { PROJECT_METADATA } from "../utils/constants";
+import { NOTIFICATION_BODY } from "../utils/constants";
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 if (!projectId) {
@@ -149,10 +149,10 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
         accounts: [account],
         notification: {
           title: "gm!",
-          body: "This is a test gm notification",
+          body: NOTIFICATION_BODY,
           // href already contains the trailing slash
           icon: `${window.location.href}gmMemesArtwork.png`,
-          url: window.location.href,
+          url: "https://gm.walletconnect.com/",
           type: "gm_hourly",
         },
       };
@@ -168,8 +168,8 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
         body: JSON.stringify(notificationPayload),
       });
 
-      const gmRes = await result.json(); // { "sent": ["eip155:1:0xafeb..."], "failed": [], "not_found": [] }
-      const isSuccessfulGm = gmRes.sent.includes(account);
+      const gmRes = await result.json();
+      const isSuccessfulGm = gmRes.success;
       setIsSendingGm(false);
       toast({
         status: isSuccessfulGm ? "success" : "error",
