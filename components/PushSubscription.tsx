@@ -157,7 +157,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
         },
       };
 
-      const result = await fetch("/notify", {
+      const result = await fetch("/api/notify", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
