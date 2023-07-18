@@ -38,7 +38,7 @@ export default async function handler(
 
     const gmRes = await result.json(); // { "sent": ["eip155:1:0xafeb..."], "failed": [], "not_found": [] }
     const isSuccessfulGm = gmRes.sent.includes(notificationPayload.accounts[0]);
-    return res.status(gmRes.status).json({ success: isSuccessfulGm });
+    return res.status(result.status).json({ success: isSuccessfulGm });
   } catch (error: any) {
     return res.status(500).json({
       success: false,
