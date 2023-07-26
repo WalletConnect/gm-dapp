@@ -1,5 +1,6 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import AuthClient, { generateNonce } from "@walletconnect/auth-client";
+import { W3iContext, W3iWidget } from "@web3inbox/widget-react";
 import { Web3Modal } from "@web3modal/standalone";
 import type { NextPage } from "next";
 import { useCallback, useContext, useEffect, useState } from "react";
@@ -25,6 +26,12 @@ const Home: NextPage = () => {
   const { authClient, signClient } = useContext(PushContext);
   const [authUri, setAuthUri] = useState<string>("");
   const [address, setAddress] = useState<string>("");
+  const [sessionTopic, setSessionTopic] = useState<string>("");
+  const [iconUrl, setIconUrl] = useState("");
+
+  useEffect(() => {
+    setIconUrl(`${window.location.origin}/gm.png`);
+  }, [setIconUrl]);
 
   const onSignInWithAuth = useCallback(() => {
     if (!authClient) return;
@@ -72,13 +79,14 @@ const Home: NextPage = () => {
         // Handle the returned session (e.g. update UI to "connected" state).
         // * You will need to create this function *
         setAddress(session.namespaces.eip155.accounts[0].split(":")[2]);
+        setSessionTopic(session.topic);
         // Close the QRCode modal in case it was open.
         web3Modal.closeModal();
       }
     } catch (error) {
       console.log({ error });
     }
-  }, [signClient]);
+  }, [signClient, setSessionTopic]);
 
   useEffect(() => {
     if (!authClient) return;
@@ -117,6 +125,26 @@ const Home: NextPage = () => {
 
   const [view, changeView] = useState<"default" | "qr" | "signedIn">("default");
 
+  const signMessage = useCallback(
+    async (message: string) => {
+      const msg = `0x${Buffer.from(message, "utf8").toString("hex")}`;
+
+      const res = await signClient?.request({
+        chainId: "eip155:1",
+        topic: sessionTopic,
+        request: {
+          method: "personal_sign",
+          params: [msg, address],
+        },
+      });
+
+      console.log({ res });
+
+      return res as string;
+    },
+    [sessionTopic, signClient, address]
+  );
+
   useEffect(() => {
     async function handleOpenModal() {
       if (authUri) {
@@ -137,15 +165,35 @@ const Home: NextPage = () => {
   }, [address, changeView]);
 
   return (
-    <Box width="100%" height="100%">
-      {view === "default" && (
-        <DefaultView
-          handleAuth={onSignInWithAuth}
-          handleSign={onSignInWithSign}
-        />
-      )}
-      {view === "signedIn" && <SignedInView address={address} />}
-    </Box>
+    <W3iContext>
+      <Flex>
+        <Box width="50%" height="100%">
+          {view === "default" && (
+            <DefaultView
+              handleAuth={onSignInWithAuth}
+              handleSign={onSignInWithSign}
+            />
+          )}
+          {view === "signedIn" && <SignedInView address={address} />}
+        </Box>
+        <Box height="100%" width="50%">
+          <W3iWidget
+            web3inboxUrl="https://web3inbox-dev-hidden.vercel.app"
+            account={address}
+            signMessage={async (message) => {
+              const rs = await signMessage(message);
+              return rs as string;
+            }}
+            dappIcon={iconUrl}
+            connect={onSignInWithSign}
+            dappName={"GM Dapp"}
+            dappNotificationsDescription={"Subscribe to get GMs!"}
+            settingsEnabled={false}
+            chatEnabled={false}
+          />
+        </Box>
+      </Flex>
+    </W3iContext>
   );
 };
 
