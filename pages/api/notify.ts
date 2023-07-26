@@ -30,7 +30,7 @@ export default async function handler(
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: projectSecret as string,
+          Authorization: `Bearer ${projectSecret}`,
         },
         body: JSON.stringify(notificationPayload),
       }
