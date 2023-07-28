@@ -1,6 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
 import AuthClient, { generateNonce } from "@walletconnect/auth-client";
-import { W3iContext, W3iWidget } from "@web3inbox/widget-react";
+import { W3iContext, W3iWidget, W3iButton } from "@web3inbox/widget-react";
 import { Web3Modal } from "@web3modal/standalone";
 import type { NextPage } from "next";
 import { useCallback, useContext, useEffect, useState } from "react";
@@ -166,8 +166,35 @@ const Home: NextPage = () => {
 
   return (
     <W3iContext>
-      <Flex>
-        <Box width="50%" height="100%">
+      <Flex width={"100vw"}>
+        <Flex width="75%" justifyContent={"flex-end"}>
+          <div style={{ position: "relative" }}>
+            <W3iButton />
+            <W3iWidget
+              style={{
+                position: "absolute",
+                top: "2.5em",
+                right: "-12em",
+                zIndex: 2,
+              }}
+              web3inboxUrl="https://web3inbox-dev-hidden.vercel.app"
+              account={address}
+              signMessage={async (message) => {
+                const rs = await signMessage(message);
+                return rs as string;
+              }}
+              dappIcon={iconUrl}
+              connect={onSignInWithSign}
+              dappName={"GM Dapp"}
+              dappNotificationsDescription={"Subscribe to get GMs!"}
+              settingsEnabled={false}
+              chatEnabled={false}
+            />
+          </div>
+        </Flex>
+      </Flex>
+      <Flex width={"100%"} justifyContent="center">
+        <Box width="30%" height="100%">
           {view === "default" && (
             <DefaultView
               handleAuth={onSignInWithAuth}
@@ -175,22 +202,6 @@ const Home: NextPage = () => {
             />
           )}
           {view === "signedIn" && <SignedInView address={address} />}
-        </Box>
-        <Box height="100%" width="50%">
-          <W3iWidget
-            web3inboxUrl="https://web3inbox-dev-hidden.vercel.app"
-            account={address}
-            signMessage={async (message) => {
-              const rs = await signMessage(message);
-              return rs as string;
-            }}
-            dappIcon={iconUrl}
-            connect={onSignInWithSign}
-            dappName={"GM Dapp"}
-            dappNotificationsDescription={"Subscribe to get GMs!"}
-            settingsEnabled={false}
-            chatEnabled={false}
-          />
         </Box>
       </Flex>
     </W3iContext>
