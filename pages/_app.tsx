@@ -1,20 +1,13 @@
-import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { version } from "@walletconnect/push-client/package.json";
-import {
-  ChakraProvider,
-  Box,
-  Flex,
-  Grid,
-  GridItem,
-  Image,
-} from "@chakra-ui/react";
+import { ChakraProvider, Box, Flex, Grid, GridItem } from "@chakra-ui/react";
 import ThemeSwitcher from "../components/ThemeSwitcher";
 import PushProvider from "../contexts/PushProvider";
+import { theme } from "../styles/theme";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <PushProvider>
         <Box
           width="100vw"
@@ -34,23 +27,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                 justifyContent="center"
                 gap="5"
                 fontSize={"1.25em"}
-              >
-                <div>Push subscription example app</div>
-                <Flex
-                  padding="0.5em"
-                  borderRadius="16px"
-                  className="bg-secondary"
-                  gap="2"
-                >
-                  <Image
-                    width="1.5em"
-                    height="1.5em"
-                    src="/wc-bg.png"
-                    alt="WC"
-                  ></Image>
-                  <span>v{version}</span>
-                </Flex>
-              </Flex>
+              />
             </GridItem>
             <Flex justifyContent="center">
               <GridItem area={"main"} justifyContent="center">
