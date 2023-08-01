@@ -59,15 +59,9 @@ const Home: NextPage = () => {
         // Provide the namespaces and chains (e.g. `eip155` for EVM-based chains) we want to use in this session.
         requiredNamespaces: {
           eip155: {
-            methods: [
-              "eth_sendTransaction",
-              "eth_signTransaction",
-              "eth_sign",
-              "personal_sign",
-              "eth_signTypedData",
-            ],
+            methods: ["personal_sign"],
             chains: ["eip155:1"],
-            events: ["chainChanged", "accountsChanged"],
+            events: [],
           },
         },
       });
