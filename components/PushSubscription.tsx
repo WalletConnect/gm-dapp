@@ -254,7 +254,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
     });
   }, [toast, account, pushClient]);
 
-  return isSubscribed ? (
+  return true ? (
     <Flex flexDirection="column" gap={2}>
       <Button
         leftIcon={<SunIcon />}
@@ -272,7 +272,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
           border: "solid 1px yellowgreen",
         }}
       >
-        Send me a gm
+        Send me a gm (notify)
       </Button>
     </Flex>
   ) : (
