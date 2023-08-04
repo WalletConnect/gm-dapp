@@ -173,7 +173,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
         colorScheme: isSuccessfulGm ? "whatsapp" : "red",
         title: isSuccessfulGm
           ? `gm notification sent to ${account}`
-          : "gm notification failed",
+          : "gm notification failed. Did you set up a subscription via the widget first?",
       });
     } catch (error) {
       setIsSendingGm(false);
@@ -254,7 +254,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
     });
   }, [toast, account, pushClient]);
 
-  return isSubscribed ? (
+  return (
     <Flex flexDirection="column" gap={2}>
       <Button
         leftIcon={<SunIcon />}
@@ -275,27 +275,6 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
         Send me a gm
       </Button>
     </Flex>
-  ) : (
-    <Button
-      leftIcon={<SunIcon />}
-      rightIcon={<SunIcon />}
-      size="lg"
-      fontWeight="bold"
-      onClick={handleSubscribe}
-      border="solid 1px green"
-      color={gmBtnTextColor}
-      bg="#2BEE6C"
-      borderRadius={"16px"}
-      _hover={{
-        bg: "yellow.300",
-        border: "solid 1px yellowgreen",
-      }}
-      isLoading={isSubscribing}
-      loadingText="Subscribing.."
-      isDisabled={true}
-    >
-      Subscribe to gm by clicking the bell
-    </Button>
   );
 };
 
