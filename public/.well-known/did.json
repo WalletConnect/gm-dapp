@@ -21,7 +21,7 @@
       "controller": "did:web:notify.gm.walletconnect.com",
       "publicKeyJwk": {
         "kty": "OKP",
-        "crv": "X25519",
+        "crv": "Ed25519",
         "x": "xFrE6dBXm7ptDcwb4yIGcwNAtIKEXJPz10cWVodof7Q"
       }
     }
