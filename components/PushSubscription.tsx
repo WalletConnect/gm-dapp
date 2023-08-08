@@ -254,7 +254,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
     });
   }, [toast, account, pushClient]);
 
-  return isSubscribed ? (
+  return true ? (
     <Flex flexDirection="column" gap={2}>
       <Button
         leftIcon={<SunIcon />}
@@ -272,25 +272,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
           border: "solid 1px yellowgreen",
         }}
       >
-        Send me a gm
-      </Button>
-      <Button
-        size="lg"
-        fontWeight="bold"
-        border="solid 1px rgba(255, 0, 0, 0.2)"
-        borderRadius={"16px"}
-        onClick={handleUnsubscribe}
-        isLoading={isUnsubscribing}
-        disabled={isUnsubscribing}
-        loadingText="Unsubscribing.."
-        color="red.400"
-        _hover={{
-          bg: "red.300",
-          border: "solid 1px red",
-          color: gmBtnTextColor,
-        }}
-      >
-        Unsubscribe from gm
+        Send me a gm (notify)
       </Button>
     </Flex>
   ) : (
@@ -310,9 +292,9 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
       }}
       isLoading={isSubscribing}
       loadingText="Subscribing.."
-      isDisabled={isSubscribing}
+      isDisabled={true}
     >
-      Subscribe to gm
+      Subscribe to gm by clicking the bell
     </Button>
   );
 };
