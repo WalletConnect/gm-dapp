@@ -9,6 +9,7 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import { useContext } from "react";
+import GmCard from "../components/core/GmCard";
 import { PushContext } from "../contexts/PushContext";
 import useThemeColor from "../styles/useThemeColors";
 
@@ -18,14 +19,8 @@ const DefaultView: React.FC<{
   const { initialized } = useContext(PushContext);
   const { colorMode } = useColorMode();
 
-  const {
-    borderColor,
-    dividerColor,
-    cardBgColor,
-    infoTextColor,
-    strongTextColor,
-    cardFooterBgColor,
-  } = useThemeColor();
+  const { dividerColor, infoTextColor, strongTextColor, cardFooterBgColor } =
+    useThemeColor();
 
   return (
     <Box w="360px">
@@ -41,13 +36,7 @@ const DefaultView: React.FC<{
           />
         </Flex>
       </Box>
-      <Flex
-        flexDir={"column"}
-        borderRadius={"24px"}
-        bgColor={cardBgColor}
-        alignItems={"center"}
-        border={`solid 1px ${borderColor}`}
-      >
+      <GmCard>
         <Box pt="40px" w="full">
           <Heading
             py="16px"
@@ -102,7 +91,7 @@ const DefaultView: React.FC<{
             Terms of Service
           </Text>
         </Box>
-      </Flex>
+      </GmCard>
     </Box>
   );
 };

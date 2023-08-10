@@ -35,7 +35,7 @@ function MyApp({ Component, pageProps }: AppProps) {
               </GridItem>
             </Flex>
             <GridItem area={"footer"} alignSelf="flex-end">
-              <Flex justifyContent="flex-end" paddingRight={4}>
+              <Flex justifyContent="flex-end" paddingRight={"36px"}>
                 <ThemeSwitcher />
               </Flex>
             </GridItem>

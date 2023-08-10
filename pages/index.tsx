@@ -1,13 +1,18 @@
-import { Box, Flex } from "@chakra-ui/react";
-import AuthClient, { generateNonce } from "@walletconnect/auth-client";
+import { Box, Flex, Spinner, Text, Image, IconButton } from "@chakra-ui/react";
 import { W3iContext, W3iWidget, W3iButton } from "@web3inbox/widget-react";
 import { Web3Modal } from "@web3modal/standalone";
+import { providers } from "ethers";
+import truncate from "smart-truncate";
 import type { NextPage } from "next";
 import { useCallback, useContext, useEffect, useState } from "react";
+import { FiLogOut } from "react-icons/fi";
 import { PushContext } from "../contexts/PushContext";
 
 import DefaultView from "../views/DefaultView";
 import SignedInView from "../views/SignedInView";
+import Zorb from "../components/core/Zorb";
+import EthIcon from "../components/core/EthIcon";
+import useThemeColor from "../styles/useThemeColors";
 
 // 1. Get projectID at https://cloud.walletconnect.com
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
@@ -24,32 +29,43 @@ const web3Modal = new Web3Modal({
 
 const Home: NextPage = () => {
   const { authClient, signClient } = useContext(PushContext);
-  const [authUri, setAuthUri] = useState<string>("");
   const [address, setAddress] = useState<string>("");
   const [sessionTopic, setSessionTopic] = useState<string>("");
   const [iconUrl, setIconUrl] = useState("");
+  const [balance, setBalance] = useState<number>();
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  const { cardBgColor, defaultFontColor } = useThemeColor();
 
   useEffect(() => {
     setIconUrl(`${window.location.origin}/gm.png`);
   }, [setIconUrl]);
 
-  const onSignInWithAuth = useCallback(() => {
-    if (!authClient) return;
-    authClient
-      .request({
-        aud: window.location.href,
-        domain: window.location.hostname.split(".").slice(-2).join("."),
-        chainId: "eip155:1",
-        type: "eip4361",
-        nonce: generateNonce(),
-        statement: "Sign in with wallet.",
-      })
-      .then(({ uri }) => {
-        if (uri) {
-          setAuthUri(uri);
-        }
-      });
-  }, [setAuthUri, authClient]);
+  useEffect(() => {
+    const innerEffect = async (address: string) => {
+      setLoading(true);
+      const provider = new providers.JsonRpcProvider(
+        `https://rpc.walletconnect.com/v1/?chainId=eip155:1&projectId=${process.env.NEXT_PUBLIC_PROJECT_ID}`
+      );
+
+      try {
+        const balance = await provider.getBalance(address);
+        setBalance(balance.toNumber());
+      } catch (error) {
+        setBalance(0);
+        console.log({ error });
+      }
+
+      setLoading(false);
+    };
+    if (address) {
+      innerEffect(address);
+    }
+  }, [setBalance, address]);
+
+  const onSignOut = useCallback(() => {
+    window.location.reload();
+  }, []);
 
   const onSignInWithSign = useCallback(async () => {
     if (!signClient) return;
@@ -140,18 +156,6 @@ const Home: NextPage = () => {
   );
 
   useEffect(() => {
-    async function handleOpenModal() {
-      if (authUri) {
-        await web3Modal.openModal({
-          uri: authUri,
-          standaloneChains: ["eip155:1"],
-        });
-      }
-    }
-    handleOpenModal();
-  }, [authUri]);
-
-  useEffect(() => {
     if (address) {
       web3Modal.closeModal();
       changeView("signedIn");
@@ -161,42 +165,109 @@ const Home: NextPage = () => {
   return (
     <W3iContext>
       <Flex width={"100vw"}>
-        <Flex width="75%" justifyContent={"flex-end"}>
+        <Flex
+          position="fixed"
+          top={"36px"}
+          right={"36px"}
+          alignItems="center"
+          gap="16px"
+        >
           <div style={{ position: "relative" }}>
             <W3iButton />
-            <W3iWidget
-              style={{
-                position: "absolute",
-                top: "2.5em",
-                right: "-12em",
-                zIndex: 2,
+            <Box
+              position="absolute"
+              top="3em"
+              right={{
+                base: "10",
+                md: "5.5em",
               }}
-              web3inboxUrl="https://web3inbox-dev-hidden.vercel.app"
-              account={address}
-              signMessage={async (message) => {
-                const rs = await signMessage(message);
-                return rs as string;
-              }}
-              dappIcon={iconUrl}
-              connect={onSignInWithSign}
-              dappName={"GM Dapp"}
-              dappNotificationsDescription={"Subscribe to get GMs!"}
-              settingsEnabled={false}
-              chatEnabled={false}
-            />
+              width="100%"
+              height="100vh"
+              zIndex={99999}
+            >
+              <W3iWidget
+                onMessage={console.log}
+                onSubscriptionSettled={console.log}
+                web3inboxUrl="https://web3inbox-dev-hidden.vercel.app"
+                account={address}
+                signMessage={async (message) => {
+                  const rs = await signMessage(message);
+                  return rs as string;
+                }}
+                dappIcon={iconUrl}
+                connect={onSignInWithSign}
+                dappName={"GM Dapp"}
+                dappNotificationsDescription={"Subscribe to get GMs!"}
+                settingsEnabled={false}
+                chatEnabled={false}
+              />
+            </Box>
           </div>
+
+          {address && (
+            <Flex
+              justifyContent="space-between"
+              fontSize={"1.5em"}
+              alignItems="center"
+              borderRadius="100px"
+              border="1px solid rgba(6, 43, 43, 0.10)"
+              pl="8px"
+              gap="10px"
+            >
+              <Flex fontSize={"14px"} gap="6px" alignItems="center">
+                {isLoading ? (
+                  <Spinner />
+                ) : (
+                  <Flex alignItems="center" gap="2">
+                    <EthIcon />
+                    <Text
+                      color={defaultFontColor}
+                      fontSize={"14px"}
+                      fontWeight={500}
+                    >
+                      {balance} ETH
+                    </Text>
+                  </Flex>
+                )}
+              </Flex>
+
+              <Flex
+                alignItems="center"
+                borderRadius="100px"
+                border="1px solid rgba(6, 43, 43, 0.10)"
+                backgroundColor={cardBgColor}
+                gap="6px"
+                pl="8px"
+                pr="10px"
+                py="10px"
+              >
+                <Zorb />
+                <Text
+                  fontSize={"14px"}
+                  fontWeight={500}
+                  color={defaultFontColor}
+                >
+                  {truncate(address, 9, { position: 4 })}
+                </Text>
+                <IconButton
+                  size="xs"
+                  aria-label="sign out"
+                  variant="ghost"
+                  display={"flex"}
+                  borderRadius={"100%"}
+                  icon={<FiLogOut />}
+                  colorScheme="red"
+                  onClick={onSignOut}
+                  alignSelf="flex-end"
+                />
+              </Flex>
+            </Flex>
+          )}
         </Flex>
       </Flex>
       <Flex width={"100%"} justifyContent="center">
-        <Box width="30%" height="100%">
-          {view === "default" && (
-            <DefaultView
-              handleAuth={onSignInWithAuth}
-              handleSign={onSignInWithSign}
-            />
-          )}
-          {view === "signedIn" && <SignedInView address={address} />}
-        </Box>
+        {view === "default" && <DefaultView handleSign={onSignInWithSign} />}
+        {view === "signedIn" && <SignedInView address={address} />}
       </Flex>
     </W3iContext>
   );

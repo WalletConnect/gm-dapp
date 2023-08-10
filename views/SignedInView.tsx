@@ -1,122 +1,61 @@
 import {
   Box,
-  Button,
   Divider,
   Flex,
-  Grid,
-  Image,
-  Spinner,
+  HStack,
+  IconButton,
   Text,
+  useClipboard,
 } from "@chakra-ui/react";
 import truncate from "smart-truncate";
-import { providers } from "ethers";
 
-import { useCallback, useEffect, useState } from "react";
 import PushSubscription from "../components/PushSubscription";
+import CopyIcon from "../components/core/CopyIcon";
+import GmCard from "../components/core/GmCard";
+import Zorb from "../components/core/Zorb";
+import useThemeColor from "../styles/useThemeColors";
 
 const SignedInView: React.FC<{ address: string }> = ({ address }) => {
-  const [balance, setBalance] = useState<number>();
-  const [avatar, setAvatar] = useState<string | null>();
-  const [isLoading, setLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    const innerEffect = async (address: string) => {
-      setLoading(true);
-      const provider = new providers.JsonRpcProvider(
-        `https://rpc.walletconnect.com/v1/?chainId=eip155:1&projectId=${process.env.NEXT_PUBLIC_PROJECT_ID}`
-      );
-
-      try {
-        const avatar = await provider.getAvatar(address);
-        const balance = await provider.getBalance(address);
-        setAvatar(avatar);
-        setBalance(balance.toNumber());
-      } catch (error) {
-        setBalance(0);
-        console.log({ error });
-      }
-
-      setLoading(false);
-    };
-    if (address) {
-      innerEffect(address);
-    }
-  }, [setBalance, address]);
-
-  const onSignOut = useCallback(() => {
-    window.location.reload();
-  }, []);
+  const { onCopy, hasCopied } = useClipboard(address);
+  const { actionTextColor, defaultFontColor } = useThemeColor();
 
   return (
-    <Box className="bg-secondary" borderRadius={"24px"} padding="2em">
-      <Flex flexDir={"column"} gap="5">
-        <Flex justifyContent="space-between" gap="10">
-          <Grid
-            borderRadius={"100%"}
-            width="6em"
-            height="6em"
-            className="bg-qr"
-            border="solid 1px #585F5F"
-            placeItems="center"
-            backgroundImage={avatar ?? "/gmMemesArtwork.png"}
-            backgroundPosition="center"
-            backgroundSize="contain"
-          >
-            {isLoading && <Spinner />}
-          </Grid>
-          <Flex
-            padding="0.5em"
-            border="solid 1px #585F5F"
-            borderRadius={"16px"}
-            height={"min-content"}
-            className="bg-qr"
-            alignItems="center"
-            gap="0.5em"
-          >
-            <Box
-              width="0.75em"
-              height="0.75em"
-              backgroundColor="#2BEE6C"
-              borderRadius={"100%"}
-              style={{ filter: "blur(1px)" }}
-            />
-            <span>Connected</span>
-          </Flex>
+    <Box w="360px">
+      <GmCard>
+        <Flex justifyContent="center" pt="40px" pb="24px">
+          <Box border="8px solid rgba(6, 43, 43, 0.05)" borderRadius={"64px"}>
+            <Zorb width="64px" height="64px" />
+          </Box>
         </Flex>
-        <Flex flexDirection="column" gap={2}>
-          <Text fontWeight="800" fontSize={"1.5em"}>
-            {truncate(address, 12, { position: 7 })}
-          </Text>
-          <PushSubscription account={`eip155:1:${address}`} />
+        <Flex flexDirection="column" alignItems="center" mt="8px" mb="24px">
+          <HStack>
+            <Text fontWeight="800" fontSize={"1.5em"} color={defaultFontColor}>
+              {truncate(address, 9, { position: 4 })}
+            </Text>
+            <IconButton
+              icon={<CopyIcon fillColor={hasCopied ? "#3396FF" : "#8B9797"} />}
+              aria-label="copy address"
+              onClick={onCopy}
+              variant="unstyled"
+            >
+              {hasCopied ? "Copied!" : "Copy"}
+            </IconButton>
+          </HStack>
         </Flex>
-        <Divider />
-        <Flex
-          justifyContent="space-between"
-          fontSize={"1.5em"}
-          alignItems="center"
+
+        <Text
+          textAlign={"center"}
+          color={actionTextColor}
+          fontSize="14px"
+          fontWeight={500}
+          mb="24px"
+          px="32px"
         >
-          <Text>Balance</Text>
-          {isLoading ? (
-            <Spinner />
-          ) : (
-            <Flex alignItems="center" gap="2">
-              <Image src="/eth.png" alt="ETH" width="1.5em" height="1.5em" />
-              <Text>{balance} ETH</Text>
-            </Flex>
-          )}
-        </Flex>
-        <Flex width={"100%"} justifyContent="center">
-          <Button
-            width={"100%"}
-            className="wc-button"
-            padding={"1.5em"}
-            borderRadius={"16px"}
-            onClick={onSignOut}
-          >
-            Sign Out
-          </Button>
-        </Flex>
-      </Flex>
+          Connect your wallet to the widget and enable notifications first in
+          order to send and receive notifications.
+        </Text>
+        <PushSubscription account={`eip155:1:${address}`} />
+      </GmCard>
     </Box>
   );
 };

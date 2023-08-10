@@ -1,6 +1,5 @@
 import AuthClient from "@walletconnect/auth-client";
 import { Core } from "@walletconnect/core";
-import { DappClient } from "@walletconnect/push-client";
 import SignClient from "@walletconnect/sign-client";
 
 import { PROJECT_METADATA } from "./constants";
@@ -14,7 +13,7 @@ const core = new Core({
 });
 
 export let authClient: AuthClient;
-export let pushClient: DappClient;
+// export let pushClient: DappClient;
 export let signClient: SignClient;
 
 export async function createSignClient() {
@@ -41,17 +40,17 @@ export async function createAuthClient() {
   });
 }
 
-export async function createPushClient() {
-  if (!projectId) {
-    throw new Error("You need to provide NEXT_PUBLIC_PROJECT_ID env variable");
-  }
-  pushClient = await DappClient.init({
-    core,
-    projectId,
-    metadata: PROJECT_METADATA,
-    relayUrl,
-    logger: "debug",
-  });
+// export async function createPushClient() {
+//   if (!projectId) {
+//     throw new Error("You need to provide NEXT_PUBLIC_PROJECT_ID env variable");
+//   }
+//   pushClient = await DappClient.init({
+//     core,
+//     projectId,
+//     metadata: PROJECT_METADATA,
+//     relayUrl,
+//     logger: "debug",
+//   });
 
-  console.log("pushClient", pushClient);
-}
+//   console.log("pushClient", pushClient);
+// }
