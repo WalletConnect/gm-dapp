@@ -173,7 +173,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
         colorScheme: isSuccessfulGm ? "whatsapp" : "red",
         title: isSuccessfulGm
           ? `gm notification sent to ${account}`
-          : "gm notification failed",
+          : "gm notification failed. Did you set up a subscription via the widget first?",
       });
     } catch (error) {
       setIsSendingGm(false);
@@ -254,7 +254,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
     });
   }, [toast, account, pushClient]);
 
-  return isSubscribed ? (
+  return (
     <Flex flexDirection="column" gap={2}>
       <Button
         leftIcon={<SunIcon />}
@@ -274,46 +274,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
       >
         Send me a gm
       </Button>
-      <Button
-        size="lg"
-        fontWeight="bold"
-        border="solid 1px rgba(255, 0, 0, 0.2)"
-        borderRadius={"16px"}
-        onClick={handleUnsubscribe}
-        isLoading={isUnsubscribing}
-        disabled={isUnsubscribing}
-        loadingText="Unsubscribing.."
-        color="red.400"
-        _hover={{
-          bg: "red.300",
-          border: "solid 1px red",
-          color: gmBtnTextColor,
-        }}
-      >
-        Unsubscribe from gm
-      </Button>
     </Flex>
-  ) : (
-    <Button
-      leftIcon={<SunIcon />}
-      rightIcon={<SunIcon />}
-      size="lg"
-      fontWeight="bold"
-      onClick={handleSubscribe}
-      border="solid 1px green"
-      color={gmBtnTextColor}
-      bg="#2BEE6C"
-      borderRadius={"16px"}
-      _hover={{
-        bg: "yellow.300",
-        border: "solid 1px yellowgreen",
-      }}
-      isLoading={isSubscribing}
-      loadingText="Subscribing.."
-      isDisabled={isSubscribing}
-    >
-      Subscribe to gm
-    </Button>
   );
 };
 
