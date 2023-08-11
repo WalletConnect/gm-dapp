@@ -9,6 +9,15 @@ function useThemeColor() {
   );
   const buttonTextColor = useColorModeValue("#141414", "#949E9E");
 
+  const disabledButtonBgColor = useColorModeValue(
+    "rgba(6, 43, 43, 0.15)",
+    "#272A2A"
+  );
+  const disabledButtonTextColor = useColorModeValue(
+    "#8B9797",
+    "rgba(255, 255, 255, 0.15)"
+  );
+
   const defaultFontColor = useColorModeValue("#191A1A", "#FFFFFF");
   const actionTextColor = useColorModeValue("#474D4D", "#A8B1B1");
   const cardFooterBgColor = useColorModeValue(
@@ -39,6 +48,8 @@ function useThemeColor() {
     actionTextColor,
     buttonTextColor,
     buttonBgColor,
+    disabledButtonBgColor,
+    disabledButtonTextColor,
   };
 }
 

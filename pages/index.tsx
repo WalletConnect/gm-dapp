@@ -13,6 +13,7 @@ import SignedInView from "../views/SignedInView";
 import Zorb from "../components/core/Zorb";
 import EthIcon from "../components/core/EthIcon";
 import useThemeColor from "../styles/useThemeColors";
+import { widgetStore } from "../stores/widgetStore";
 
 // 1. Get projectID at https://cloud.walletconnect.com
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
@@ -155,6 +156,10 @@ const Home: NextPage = () => {
     [sessionTopic, signClient, address]
   );
 
+  const handleIsSubscribed = useCallback(() => {
+    widgetStore.isSubscribed = true;
+  }, []);
+
   useEffect(() => {
     if (address) {
       web3Modal.closeModal();
@@ -183,11 +188,10 @@ const Home: NextPage = () => {
               }}
               width="100%"
               height="100vh"
-              zIndex={99999}
             >
               <W3iWidget
                 onMessage={console.log}
-                onSubscriptionSettled={console.log}
+                onSubscriptionSettled={handleIsSubscribed}
                 web3inboxUrl="https://web3inbox-dev-hidden.vercel.app"
                 account={address}
                 signMessage={async (message) => {

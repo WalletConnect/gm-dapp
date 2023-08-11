@@ -6,7 +6,10 @@ interface ISendIconProps {
 }
 
 function SendIcon({ isDisabled }: ISendIconProps) {
-  const stroke = useColorModeValue("#8B9797", "#949E9E");
+  const stroke = useColorModeValue(
+    "#8B9797",
+    isDisabled ? "#3B4040" : "#949E9E"
+  );
   const backgroundColor = useColorModeValue(
     "#fff",
     "rgba(255, 255, 255, 0.15)"
@@ -16,11 +19,20 @@ function SendIcon({ isDisabled }: ISendIconProps) {
     "rgba(255, 255, 255, 0.05)"
   );
 
+  const disabledBackgroundColor = useColorModeValue(
+    "rgba(6, 43, 43, 0.02)",
+    "#272A2A"
+  );
+  const disabledBorderColor = useColorModeValue(
+    "rgba(6, 43, 43, 0.10)",
+    "rgba(255, 255, 255, 0.05)"
+  );
+
   return (
     <Flex
-      border={`2px solid ${borderColor}`}
+      border={`2px solid ${isDisabled ? disabledBorderColor : borderColor}`}
       borderRadius="50%"
-      backgroundColor={backgroundColor}
+      backgroundColor={isDisabled ? disabledBackgroundColor : backgroundColor}
     >
       <Flex
         p="5px"
