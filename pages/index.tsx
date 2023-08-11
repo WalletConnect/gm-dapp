@@ -165,14 +165,12 @@ const Home: NextPage = () => {
           <div style={{ position: "relative" }}>
             <W3iButton />
             <Box
-              position="absolute"
-              top="3em"
+              position="fixed"
+              top="6em"
               right={{
-                base: "10",
-                md: "5.5em",
+                base: 0,
+                sm: "38px",
               }}
-              width="100%"
-              height="100vh"
             >
               <W3iWidget
                 onMessage={console.log}
