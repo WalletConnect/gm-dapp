@@ -51,16 +51,16 @@ function SendIcon({ isDisabled }: ISendIconProps) {
           <path
             d="M9.00941 5.92363L6.74414 8.18814"
             stroke={stroke}
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
           <path
             d="M3.22818 4.79649L12.2588 1.78624C12.6265 1.66364 13.0239 1.86218 13.1465 2.22969C13.1946 2.37377 13.1946 2.52956 13.1465 2.67365L10.1353 11.7013C10.0127 12.0689 9.61524 12.2677 9.24746 12.1451C9.08533 12.0911 8.94848 11.9799 8.86257 11.8322L6.74344 8.18719L3.09723 6.06877C2.76211 5.87396 2.64842 5.44446 2.8433 5.10945C2.9292 4.96177 3.06605 4.85049 3.22818 4.79649Z"
             stroke={stroke}
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
       </Flex>
