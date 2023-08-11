@@ -29,7 +29,7 @@ const web3Modal = new Web3Modal({
 });
 
 const Home: NextPage = () => {
-  const { authClient, signClient } = useContext(PushContext);
+  const { signClient } = useContext(PushContext);
   const [address, setAddress] = useState<string>("");
   const [sessionTopic, setSessionTopic] = useState<string>("");
   const [iconUrl, setIconUrl] = useState("");
@@ -98,21 +98,6 @@ const Home: NextPage = () => {
       console.log({ error });
     }
   }, [signClient, setSessionTopic]);
-
-  useEffect(() => {
-    if (!authClient) return;
-    authClient.on("auth_response", ({ params, topic }) => {
-      if ("code" in params) {
-        console.error(params);
-        return;
-      }
-      if ("error" in params) {
-        console.error(params.error);
-        return;
-      }
-      setAddress(params.result.p.iss.split(":")[4]);
-    });
-  }, [authClient]);
 
   useEffect(() => {
     if (!signClient) return;

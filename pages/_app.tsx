@@ -1,5 +1,4 @@
 import type { AppProps } from "next/app";
-import { version } from "@walletconnect/push-client/package.json";
 import { ChakraProvider, Box, Flex, Grid, GridItem } from "@chakra-ui/react";
 import ThemeSwitcher from "../components/ThemeSwitcher";
 import PushProvider from "../contexts/PushProvider";
