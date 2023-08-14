@@ -11,6 +11,7 @@ import { mainnet } from "wagmi/chains";
 import ThemeSwitcher from "../components/ThemeSwitcher";
 import PushProvider from "../contexts/PushProvider";
 import { theme } from "../styles/theme";
+import Footer from "../components/core/Footer";
 
 // 1. Get projectID at https://cloud.walletconnect.com
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
@@ -60,11 +61,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                     <Component {...pageProps} />
                   </GridItem>
                 </Flex>
-                <GridItem area={"footer"} alignSelf="flex-end">
-                  <Flex justifyContent="flex-end" paddingRight={"36px"}>
-                    <ThemeSwitcher />
-                  </Flex>
-                </GridItem>
+                <Footer />
               </Grid>
             </Box>
           </PushProvider>
