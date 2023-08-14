@@ -14,7 +14,6 @@
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@walletconnect/core": "^2.9.2",
-    "@walletconnect/sign-client": "^2.9.2",
     "@walletconnect/types": "^2.9.2",
     "@web3inbox/widget-html": "^0.4.0",
     "@web3inbox/widget-react": "^0.4.0",

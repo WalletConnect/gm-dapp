@@ -9,14 +9,11 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import { useWeb3Modal } from "@web3modal/react";
-import { useContext } from "react";
 import { useAccount } from "wagmi";
 import GmCard from "../components/core/GmCard";
-import { PushContext } from "../contexts/PushContext";
 import useThemeColor from "../styles/useThemeColors";
 
 const DefaultView = () => {
-  const { initialized } = useContext(PushContext);
   const { address, isConnected } = useAccount();
   const { colorMode } = useColorMode();
   const { open } = useWeb3Modal();
@@ -63,13 +60,10 @@ const DefaultView = () => {
             _hover={{
               bg: "brand.300",
             }}
-            disabled={!initialized}
           >
             <Flex gap="1em">
               <Image src="/wc.png" fit="scale-down" alt="WC" />
-              <span style={{ color: "white" }}>
-                {isConnected && address ? "Connected" : "WalletConnect Sign"}
-              </span>
+              <span style={{ color: "white" }}>WalletConnect Sign</span>
             </Flex>
           </Button>
         </Flex>

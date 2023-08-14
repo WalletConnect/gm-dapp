@@ -4,6 +4,7 @@ import {
   Flex,
   HStack,
   IconButton,
+  Spinner,
   Text,
   useClipboard,
 } from "@chakra-ui/react";
@@ -16,10 +17,12 @@ import Zorb from "../components/core/Zorb";
 import useThemeColor from "../styles/useThemeColors";
 import { useSnapshot } from "valtio";
 import { widgetStore } from "../stores/widgetStore";
+import { useAccount } from "wagmi";
 
-const SignedInView: React.FC<{ address: string }> = ({ address }) => {
+const SignedInView: React.FC = () => {
+  const { address } = useAccount();
   const { isSubscribed } = useSnapshot(widgetStore);
-  const { onCopy, hasCopied } = useClipboard(address);
+  const { onCopy, hasCopied } = useClipboard(address ?? "");
   const { actionTextColor, defaultFontColor } = useThemeColor();
 
   return (
@@ -31,19 +34,29 @@ const SignedInView: React.FC<{ address: string }> = ({ address }) => {
           </Box>
         </Flex>
         <Flex flexDirection="column" alignItems="center" mt="8px" mb="24px">
-          <HStack>
-            <Text fontWeight="800" fontSize={"1.5em"} color={defaultFontColor}>
-              {truncate(address, 9, { position: 4 })}
-            </Text>
-            <IconButton
-              icon={<CopyIcon fillColor={hasCopied ? "#3396FF" : "#8B9797"} />}
-              aria-label="copy address"
-              onClick={onCopy}
-              variant="unstyled"
-            >
-              {hasCopied ? "Copied!" : "Copy"}
-            </IconButton>
-          </HStack>
+          {address ? (
+            <HStack>
+              <Text
+                fontWeight="800"
+                fontSize={"1.5em"}
+                color={defaultFontColor}
+              >
+                {truncate(address, 9, { position: 4 })}
+              </Text>
+              <IconButton
+                icon={
+                  <CopyIcon fillColor={hasCopied ? "#3396FF" : "#8B9797"} />
+                }
+                aria-label="copy address"
+                onClick={onCopy}
+                variant="unstyled"
+              >
+                {hasCopied ? "Copied!" : "Copy"}
+              </IconButton>
+            </HStack>
+          ) : (
+            <Spinner />
+          )}
         </Flex>
 
         <Text

@@ -8,8 +8,6 @@ import {
 import { Web3Modal } from "@web3modal/react";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { mainnet } from "wagmi/chains";
-import ThemeSwitcher from "../components/ThemeSwitcher";
-import PushProvider from "../contexts/PushProvider";
 import { theme } from "../styles/theme";
 import Footer from "../components/core/Footer";
 
@@ -35,36 +33,34 @@ function MyApp({ Component, pageProps }: AppProps) {
     <>
       <WagmiConfig config={wagmiConfig}>
         <ChakraProvider theme={theme}>
-          <PushProvider>
-            <Box
-              width="100vw"
-              style={{ width: "100vw", height: "100vh" }}
-              className="bg-primary"
+          <Box
+            width="100vw"
+            style={{ width: "100vw", height: "100vh" }}
+            className="bg-primary"
+          >
+            <Grid
+              templateAreas={`"header" "main" "footer"`}
+              style={{ height: "100%", width: "100%" }}
+              gridTemplateRows={"50px 3f 20px"}
+              gridTemplateColumns={"1fr"}
+              paddingY="2em"
             >
-              <Grid
-                templateAreas={`"header" "main" "footer"`}
-                style={{ height: "100%", width: "100%" }}
-                gridTemplateRows={"50px 3f 20px"}
-                gridTemplateColumns={"1fr"}
-                paddingY="2em"
-              >
-                <GridItem area={"header"} padding={4}>
-                  <Flex
-                    alignItems="center"
-                    justifyContent="center"
-                    gap="5"
-                    fontSize={"1.25em"}
-                  />
+              <GridItem area={"header"} padding={4}>
+                <Flex
+                  alignItems="center"
+                  justifyContent="center"
+                  gap="5"
+                  fontSize={"1.25em"}
+                />
+              </GridItem>
+              <Flex justifyContent="center">
+                <GridItem area={"main"} justifyContent="center">
+                  <Component {...pageProps} />
                 </GridItem>
-                <Flex justifyContent="center">
-                  <GridItem area={"main"} justifyContent="center">
-                    <Component {...pageProps} />
-                  </GridItem>
-                </Flex>
-                <Footer />
-              </Grid>
-            </Box>
-          </PushProvider>
+              </Flex>
+              <Footer />
+            </Grid>
+          </Box>
         </ChakraProvider>
       </WagmiConfig>
       <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />

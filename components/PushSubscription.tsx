@@ -90,23 +90,21 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
           </Flex>
         ),
       });
-    } catch (error) {
+    } catch (error: any) {
       setIsSendingGm(false);
       console.error({ sendGmError: error });
-      if (error instanceof Error) {
-        toast({
-          status: "error",
-          title: error.message,
-          description: error.cause as string,
-        });
-      }
+      toast({
+        status: "error",
+        title: error.message,
+        description: error.cause,
+      });
     }
   }, [toast, account, borderColor, defaultFontColor, cardBgColor]);
 
   return (
     <Flex flexDirection="column" gap={2} mb="24px">
       <Button
-        leftIcon={<SendIcon isDisabled={!isSubscribed || isSendingGm} />}
+        leftIcon={<SendIcon isDisabled={isSendingGm} />}
         display="flex"
         size="xl"
         fontSize="16px"
@@ -118,7 +116,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
         padding="12px 18px 12px 12px"
         justifyContent={"flex-start"}
         onClick={handleSendGm}
-        isDisabled={!isSubscribed || isSendingGm}
+        isDisabled={isSendingGm}
         _disabled={{
           bgColor: disabledButtonBgColor,
           color: disabledButtonTextColor,
