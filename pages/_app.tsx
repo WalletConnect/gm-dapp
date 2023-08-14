@@ -1,8 +1,8 @@
 import type { AppProps } from "next/app";
 import { ChakraProvider, Box, Flex, Grid, GridItem } from "@chakra-ui/react";
-import ThemeSwitcher from "../components/ThemeSwitcher";
 import PushProvider from "../contexts/PushProvider";
 import { theme } from "../styles/theme";
+import Footer from "../components/core/Footer";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -33,11 +33,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                 <Component {...pageProps} />
               </GridItem>
             </Flex>
-            <GridItem area={"footer"} alignSelf="flex-end">
-              <Flex justifyContent="flex-end" paddingRight={"36px"}>
-                <ThemeSwitcher />
-              </Flex>
-            </GridItem>
+            <Footer />
           </Grid>
         </Box>
       </PushProvider>
