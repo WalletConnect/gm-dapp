@@ -8,17 +8,15 @@ import {
   Text,
   useColorMode,
 } from "@chakra-ui/react";
-import { useContext } from "react";
+import { useWeb3Modal } from "@web3modal/react";
+import { useAccount } from "wagmi";
 import GmCard from "../components/core/GmCard";
-import { PushContext } from "../contexts/PushContext";
 import useThemeColor from "../styles/useThemeColors";
 
-const DefaultView: React.FC<{
-  handleSign: () => void;
-}> = ({ handleSign }) => {
-  const { initialized } = useContext(PushContext);
+const DefaultView = () => {
+  const { address, isConnected } = useAccount();
   const { colorMode } = useColorMode();
-
+  const { open } = useWeb3Modal();
   const { dividerColor, infoTextColor, strongTextColor, cardFooterBgColor } =
     useThemeColor();
 
@@ -55,20 +53,17 @@ const DefaultView: React.FC<{
           <Button
             paddingY="1.25em"
             fontSize={"16px"}
-            onClick={handleSign}
+            onClick={open}
             borderRadius={"10px"}
             border="solid 1px rgba(6, 43, 43, 0.10)"
             bg="brand.400"
             _hover={{
               bg: "brand.300",
             }}
-            disabled={!initialized}
           >
             <Flex gap="1em">
               <Image src="/wc.png" fit="scale-down" alt="WC" />
-              <span style={{ color: "white" }}>
-                {initialized ? "WalletConnect Sign" : "Initializing..."}
-              </span>
+              <span style={{ color: "white" }}>WalletConnect Sign</span>
             </Flex>
           </Button>
         </Flex>
