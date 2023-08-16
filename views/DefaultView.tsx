@@ -68,16 +68,15 @@ const DefaultView = () => {
           </Button>
         </Flex>
 
-        <Divider borderColor={dividerColor} />
-
         <Box
           fontSize={"14px"}
           color={infoTextColor}
           bgColor={cardFooterBgColor}
-          borderBottomRadius={"24px"}
+          borderBottomRadius={"23px"}
           padding="12px"
           textAlign={"center"}
           w="full"
+          borderTop={`1px solid ${dividerColor}`}
         >
           <Text as="span" fontWeight={colorMode === "dark" ? "600" : "normal"}>
             By connecting your wallet, you acknowledge and agree to our

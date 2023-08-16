@@ -26,6 +26,8 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
     buttonBgColor,
     disabledButtonBgColor,
     disabledButtonTextColor,
+    hoverButtonBgColor,
+    activeButtonBgColor,
     cardBgColor,
     borderColor,
   } = useThemeColor();
@@ -117,6 +119,12 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
         justifyContent={"flex-start"}
         onClick={handleSendGm}
         isDisabled={isSendingGm}
+        _hover={{
+          bgColor: hoverButtonBgColor,
+        }}
+        _active={{
+          bgColor: activeButtonBgColor,
+        }}
         _disabled={{
           bgColor: disabledButtonBgColor,
           color: disabledButtonTextColor,

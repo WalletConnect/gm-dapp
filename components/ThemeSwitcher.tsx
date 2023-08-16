@@ -7,19 +7,18 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import React from "react";
-import { BsSunFill, BsFillMoonFill } from "react-icons/bs";
 import useThemeColor from "../styles/useThemeColors";
+import SunIcon from "./core/SunIcon";
+import MoonIcon from "./core/MoonIcon";
 
 const ThemeSwitcher = () => {
   const { colorMode, toggleColorMode } = useColorMode();
-  const { borderColor, defaultFontColor } = useThemeColor();
+  const { borderColor } = useThemeColor();
   const activeIconBg = useColorModeValue("#FFF", "#1E1F1F");
   const activeIconBorderColor = useColorModeValue(
     "rgba(6, 43, 43, 0.10)",
     "rgba(255, 255, 255, 0.05)"
   );
-
-  const inactiveIconColor = useColorModeValue("#9EA9A9", "#6E7777");
 
   return (
     <FormLabel
@@ -64,8 +63,7 @@ const ThemeSwitcher = () => {
         alignItems="center"
       >
         <Icon
-          as={colorMode === "dark" ? BsFillMoonFill : BsSunFill}
-          color={defaultFontColor}
+          as={colorMode === "dark" ? MoonIcon : SunIcon}
           padding="2px"
           w="16px"
           height="16px"
@@ -88,8 +86,7 @@ const ThemeSwitcher = () => {
         alignItems="center"
       >
         <Icon
-          as={colorMode === "dark" ? BsSunFill : BsFillMoonFill}
-          color={inactiveIconColor}
+          as={colorMode === "dark" ? SunIcon : MoonIcon}
           padding="2px"
           w={"16px"}
           height="16px"

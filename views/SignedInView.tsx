@@ -36,11 +36,7 @@ const SignedInView: React.FC = () => {
         <Flex flexDirection="column" alignItems="center" mt="8px" mb="24px">
           {address ? (
             <HStack>
-              <Text
-                fontWeight="800"
-                fontSize={"1.5em"}
-                color={defaultFontColor}
-              >
+              <Text fontWeight="600" fontSize={"20px"} color={defaultFontColor}>
                 {truncate(address, 9, { position: 4 })}
               </Text>
               <IconButton
