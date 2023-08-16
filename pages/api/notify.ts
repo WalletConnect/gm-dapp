@@ -38,8 +38,12 @@ export default async function handler(
 
     const gmRes = await result.json(); // { "sent": ["eip155:1:0xafeb..."], "failed": [], "not_found": [] }
     console.log("Cast response", gmRes);
-    const isSuccessfulGm = gmRes.sent.includes(notificationPayload.accounts[0]);
-    return res.status(result.status).json({ success: isSuccessfulGm });
+    const isSuccessfulGm = gmRes.sent?.includes(
+      notificationPayload.accounts[0]
+    );
+    return res
+      .status(result.status)
+      .json({ success: isSuccessfulGm, message: gmRes?.reason });
   } catch (error: any) {
     return res.status(500).json({
       success: false,
