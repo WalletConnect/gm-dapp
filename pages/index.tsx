@@ -8,21 +8,35 @@ import { useCallback, useEffect, useState } from "react";
 import DefaultView from "../views/DefaultView";
 import SignedInView from "../views/SignedInView";
 import { widgetStore } from "../stores/widgetStore";
-import { useWeb3Modal, Web3Button } from "@web3modal/react";
+import { useWeb3Modal } from "@web3modal/react";
 import { useAccount, useSignMessage } from "wagmi";
+import dynamic from "next/dynamic";
+
+const Web3ModalButton = dynamic(
+  () => import("@web3modal/react").then((w3m) => w3m.Web3Button),
+  {
+    ssr: false,
+  }
+);
 
 const Home: NextPage = () => {
-  const { address, connector } = useAccount();
+  const [view, changeView] = useState<"default" | "qr" | "signedIn">("default");
+
+  const { address, isConnected, connector } = useAccount({
+    onDisconnect: () => {
+      changeView("default");
+    },
+  });
   const { signMessageAsync } = useSignMessage();
   const [iconUrl, setIconUrl] = useState("");
-  const { close } = useWeb3Modal();
+  const { close, open } = useWeb3Modal();
 
   useEffect(() => {
     setIconUrl(`${window.location.origin}/gm.png`);
   }, [setIconUrl]);
 
   const onSignInWithSign = useCallback(async () => {
-    if (!connector) return;
+    if (!connector) return open();
     try {
       await connector.connect({
         chainId: 1,
@@ -30,9 +44,7 @@ const Home: NextPage = () => {
     } catch (error) {
       console.log({ error });
     }
-  }, [connector]);
-
-  const [view, changeView] = useState<"default" | "qr" | "signedIn">("default");
+  }, [connector, open]);
 
   const signMessage = useCallback(
     async (message: string) => {
@@ -97,7 +109,13 @@ const Home: NextPage = () => {
             </Box>
           </div>
 
-          <Web3Button icon="show" label="Connect Wallet" balance="show" />
+          {isConnected && (
+            <Web3ModalButton
+              icon="show"
+              label="Connect Wallet"
+              balance="show"
+            />
+          )}
         </Flex>
       </Flex>
       <Flex width={"100%"} justifyContent="center">

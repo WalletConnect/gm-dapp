@@ -9,12 +9,10 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import { useWeb3Modal } from "@web3modal/react";
-import { useAccount } from "wagmi";
 import GmCard from "../components/core/GmCard";
 import useThemeColor from "../styles/useThemeColors";
 
 const DefaultView = () => {
-  const { address, isConnected } = useAccount();
   const { colorMode } = useColorMode();
   const { open } = useWeb3Modal();
   const { dividerColor, infoTextColor, strongTextColor, cardFooterBgColor } =
@@ -63,7 +61,7 @@ const DefaultView = () => {
           >
             <Flex gap="1em">
               <Image src="/wc.png" fit="scale-down" alt="WC" />
-              <span style={{ color: "white" }}>WalletConnect Sign</span>
+              <span style={{ color: "white" }}>Connect Wallet</span>
             </Flex>
           </Button>
         </Flex>
