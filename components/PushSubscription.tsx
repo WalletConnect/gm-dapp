@@ -152,7 +152,7 @@ const PushSubscription: FC<IPushSubscriptionProps> = ({ account }) => {
           body: NOTIFICATION_BODY,
           // href already contains the trailing slash
           icon: `${window.location.href}gmMemesArtwork.png`,
-          url: "https://gm.walletconnect.com/",
+          url: "https://notify.gm.walletconnect.com",
           type: "gm_hourly",
         },
       };

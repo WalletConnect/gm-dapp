@@ -171,7 +171,7 @@ const Home: NextPage = () => {
                 right: "-12em",
                 zIndex: 2,
               }}
-              web3inboxUrl="https://web3inbox-dev-hidden.vercel.app"
+              web3inboxUrl="https://web3inbox-dev-hidden-git-chore-filter-by-notify-walletconnect1.vercel.app"
               account={address}
               signMessage={async (message) => {
                 const rs = await signMessage(message);
