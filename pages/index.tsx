@@ -48,10 +48,8 @@ const Home: NextPage = () => {
 
   const signMessage = useCallback(
     async (message: string) => {
-      const msg = `0x${Buffer.from(message, "utf8").toString("hex")}`;
-
       const res = await signMessageAsync({
-        message: msg,
+        message,
       });
 
       return res as string;
