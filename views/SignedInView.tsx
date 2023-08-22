@@ -1,6 +1,5 @@
 import {
   Box,
-  Divider,
   Flex,
   HStack,
   IconButton,
@@ -15,13 +14,12 @@ import CopyIcon from "../components/core/CopyIcon";
 import GmCard from "../components/core/GmCard";
 import Zorb from "../components/core/Zorb";
 import useThemeColor from "../styles/useThemeColors";
-import { useSnapshot } from "valtio";
-import { widgetStore } from "../stores/widgetStore";
 import { useAccount } from "wagmi";
+import { useIsSubscribed } from "@web3inbox/widget-react";
 
 const SignedInView: React.FC = () => {
   const { address } = useAccount();
-  const { isSubscribed } = useSnapshot(widgetStore);
+  const isSubscribed = useIsSubscribed();
   const { onCopy, hasCopied } = useClipboard(address ?? "");
   const { actionTextColor, defaultFontColor } = useThemeColor();
 
@@ -67,7 +65,7 @@ const SignedInView: React.FC = () => {
             ? "You are subscribed to GM. Now you can send test notifications from the dApp."
             : "Connect your wallet to the widget and enable notifications first in order to send and receive notifications."}
         </Text>
-        <PushSubscription account={`eip155:1:${address}`} />
+        <PushSubscription />
       </GmCard>
     </Box>
   );
