@@ -1,63 +1,98 @@
-import { Flex, Switch } from "@chakra-ui/react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import moon from "../public/moon.svg";
-import sun from "../public/sun.svg";
+import {
+  Flex,
+  FormLabel,
+  Icon,
+  Input,
+  useColorMode,
+  useColorModeValue,
+} from "@chakra-ui/react";
+import React from "react";
+import useThemeColor from "../styles/useThemeColors";
+import SunIcon from "./core/SunIcon";
+import MoonIcon from "./core/MoonIcon";
 
-const ThemeSwitcher: React.FC = () => {
-  const [darkMode, setDarkMode] = useState(true);
-  const switchRef = useRef(null);
-
-  const darkTheme = useMemo(
-    () => ({
-      "--primary-bg": "#1e1e1e",
-      "--secondary-bg": "#272a2a",
-      "--qr-bg": "#141414",
-      "--text-color": "white",
-      "--wc-btn-bg": "#19324d",
-      "--wc-btn-brdr": "#0f4b8a",
-      "--wc-btn-clr": "#66b1ff",
-    }),
-    []
+const ThemeSwitcher = () => {
+  const { colorMode, toggleColorMode } = useColorMode();
+  const { borderColor } = useThemeColor();
+  const activeIconBg = useColorModeValue("#FFF", "#1E1F1F");
+  const activeIconBorderColor = useColorModeValue(
+    "rgba(6, 43, 43, 0.10)",
+    "rgba(255, 255, 255, 0.05)"
   );
-
-  const lightTheme = useMemo(
-    () => ({
-      "--primary-bg": "#F1F3F3",
-      "--secondary-bg": "white",
-      "--qr-bg": "#c8d0d0",
-      "--text-color": "black",
-      "--wc-btn-bg": "#E8F2FC",
-      "--wc-btn-brdr": "#CDE5FE",
-      "--wc-btn-clr": "#3396FF",
-    }),
-    []
-  );
-
-  const setTheme = useCallback((theme: Record<string, string>) => {
-    Object.entries(theme).forEach(([key, value]) => {
-      document.documentElement.style.setProperty(key, value);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (darkMode) {
-      setTheme(darkTheme);
-    } else {
-      setTheme(lightTheme);
-    }
-  }, [darkMode, setTheme, darkTheme, lightTheme]);
 
   return (
-    <Switch
-      size="lg"
-      ref={switchRef}
-      isChecked={darkMode}
-      colorScheme="blackAlpha"
-      className={`theme-switcher theme-switcher-${darkMode ? "dark" : "light"}`}
-      onChange={({ target }) => {
-        setDarkMode(target.checked);
-      }}
-    />
+    <FormLabel
+      htmlFor="theme-switcher"
+      as={"label"}
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      gap={2}
+      position="relative"
+    >
+      <Input
+        id="theme-switcher"
+        type="checkbox"
+        checked={colorMode === "dark"}
+        onChange={toggleColorMode}
+        display="inline-block"
+        appearance="none"
+        cursor="pointer"
+        height="34px"
+        width="82px"
+        border={`1px solid ${borderColor}`}
+        _hover={{ border: `1px solid ${borderColor}` }}
+        borderRadius="full"
+      />
+      {/* Active icon */}
+      <Flex
+        transition="all 0.2s ease-in"
+        transform={`${
+          colorMode === "dark" ? "translateX(40px)" : "translateX(0)"
+        }`}
+        position="absolute"
+        cursor="pointer"
+        top={"1px"}
+        left={"1px"}
+        w={"40px"}
+        height="32px"
+        border={`solid 1px ${activeIconBorderColor}`}
+        borderRadius="full"
+        bg={activeIconBg}
+        justifyContent={"center"}
+        alignItems="center"
+      >
+        <Icon
+          as={colorMode === "dark" ? MoonIcon : SunIcon}
+          padding="2px"
+          w="16px"
+          height="16px"
+        />
+      </Flex>
+      {/* Inactive icon */}
+      <Flex
+        transition="all 0.2s ease-in"
+        transform={`${
+          colorMode === "dark" ? "translateX(0)" : "translateX(40px)"
+        }`}
+        position="absolute"
+        cursor="pointer"
+        top={"1px"}
+        left={"1px"}
+        w={"40px"}
+        height="32px"
+        borderRadius="full"
+        justifyContent={"center"}
+        alignItems="center"
+      >
+        <Icon
+          as={colorMode === "dark" ? SunIcon : MoonIcon}
+          padding="2px"
+          w={"16px"}
+          height="16px"
+        />
+      </Flex>
+    </FormLabel>
   );
 };
 
