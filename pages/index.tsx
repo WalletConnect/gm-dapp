@@ -80,7 +80,7 @@ const Home: NextPage = () => {
       title: "Welcome to gm!",
       body: "You successfully subscribed to hourly gm notifications.",
       icon: `${window.location.href}gm.png`,
-      url: "https://gm.walletconnect.com/",
+      url: "https://notify.gm.walletconnect.com/",
       type: "gm_hourly",
     });
   }, [handleSendNotification]);
