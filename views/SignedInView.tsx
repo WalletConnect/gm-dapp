@@ -18,7 +18,11 @@ import { useAccount } from "wagmi";
 import { useIsSubscribed } from "@web3inbox/widget-react";
 
 const SignedInView: React.FC = () => {
-  const { address } = useAccount();
+  const { address } = useAccount({
+    onDisconnect: () => {
+      window.location.reload();
+    },
+  });
   const isSubscribed = useIsSubscribed();
   const { onCopy, hasCopied } = useClipboard(address ?? "");
   const { actionTextColor, defaultFontColor } = useThemeColor();
@@ -65,7 +69,7 @@ const SignedInView: React.FC = () => {
             ? "You are subscribed to GM. Now you can send test notifications from the dApp."
             : "Connect your wallet to the widget and enable notifications first in order to send and receive notifications."}
         </Text>
-        <PushSubscription />
+        {address && <PushSubscription address={address} />}
       </GmCard>
     </Box>
   );

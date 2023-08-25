@@ -1,4 +1,10 @@
-import { pgTable, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  pgTable,
+  timestamp,
+  uuid,
+  varchar,
+} from "drizzle-orm/pg-core";
 
 export const gmUsers = pgTable("gm_users", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -6,4 +12,5 @@ export const gmUsers = pgTable("gm_users", {
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
+  hasBeenWelcomed: boolean("has_been_welcomed").default(false),
 });

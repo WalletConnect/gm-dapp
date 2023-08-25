@@ -1,0 +1,13 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1692970770425,
+      "tag": "0000_early_firebird",
+      "breakpoints": false
+    }
+  ]
+}
