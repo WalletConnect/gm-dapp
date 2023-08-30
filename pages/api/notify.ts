@@ -5,9 +5,9 @@ if (!projectId) {
   throw new Error("You need to provide NEXT_PUBLIC_PROJECT_ID env variable");
 }
 
-const projectSecret = process.env.CAST_PROJECT_SECRET;
+const projectSecret = process.env.NOTIFY_PROJECT_SECRET;
 if (!projectSecret) {
-  throw new Error("You need to provide CAST_PROJECT_SECRET env variable");
+  throw new Error("You need to provide NOTIFY_PROJECT_SECRET env variable");
 }
 
 export default async function handler(
@@ -25,7 +25,7 @@ export default async function handler(
 
   try {
     const result = await fetch(
-      `https://cast.walletconnect.com/${projectId}/notify`,
+      `https://notify.walletconnect.com/${projectId}/notify`,
       {
         method: "POST",
         headers: {
@@ -37,7 +37,7 @@ export default async function handler(
     );
 
     const gmRes = await result.json(); // { "sent": ["eip155:1:0xafeb..."], "failed": [], "not_found": [] }
-    console.log("Cast response", gmRes);
+    console.log("Notify Server response", gmRes);
     const isSuccessfulGm = gmRes.sent?.includes(
       notificationPayload.accounts[0]
     );

@@ -5,20 +5,22 @@ import StatusIcon from "../components/core/StatusIcon";
 import useThemeColor from "../styles/useThemeColors";
 
 interface INotification {
-  title: string;
-  body: string;
-  icon: string;
-  url: string;
-  type: string;
+  address: string;
+  notification: {
+    title: string;
+    body: string;
+    icon: string;
+    url: string;
+    type: string;
+  };
 }
 function useSendNotifcation() {
   const [isSending, setIsSending] = useState<boolean>(false);
-  const { address } = useAccount();
   const toast = useToast();
   const { defaultFontColor, cardBgColor, borderColor } = useThemeColor();
 
   const handleSendNotification = useCallback(
-    async (notification: INotification) => {
+    async ({ address, notification }: INotification) => {
       setIsSending(true);
       try {
         // Construct the payload, including the target `accounts`
@@ -81,7 +83,7 @@ function useSendNotifcation() {
         });
       }
     },
-    [toast, borderColor, address, defaultFontColor, cardBgColor]
+    [toast, borderColor, defaultFontColor, cardBgColor]
   );
 
   return {
