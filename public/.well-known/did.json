@@ -12,7 +12,7 @@
       "publicKeyJwk": {
         "kty": "OKP",
         "crv": "X25519",
-        "x": "QcHGCLwsdLbmgIcBcKN57mN5dCKVKMwNuwaagjnwzjs"
+        "x": "lZJuYYavcixJawmTJUH4ZZp5xAnP65qNGjvSwWunBAI"
       }
     },
     {
@@ -22,7 +22,7 @@
       "publicKeyJwk": {
         "kty": "OKP",
         "crv": "Ed25519",
-        "x": "xFrE6dBXm7ptDcwb4yIGcwNAtIKEXJPz10cWVodof7Q"
+        "x": "HdpWonDHJtgD2TIImqt32xWIO-dNFGsON8trBEAHVzQ"
       }
     }
   ],
