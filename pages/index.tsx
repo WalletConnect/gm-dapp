@@ -109,8 +109,8 @@ const Home: NextPage = () => {
         notification: {
           title: "Welcome to gm!",
           body: "You successfully subscribed to hourly gm notifications.",
-          icon: `${window.location.href}gm.png`,
-          url: "https://notify.gm.walletconnect.com/",
+          icon: `${window.location.origin}/gm.png`,
+          url: window.location.origin,
           type: "gm_hourly",
         },
       });
