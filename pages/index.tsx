@@ -178,9 +178,6 @@ const Home: NextPage = () => {
                   }}
                   zIndex={99999}
                   animation={animation}
-                  // initial={{ opacity: 0 }}
-                  // animate={{ opacity: 1 }}
-                  // exit={{ opacity: 0 }}
                 >
                   <W3iWidget
                     onMessage={console.log}
