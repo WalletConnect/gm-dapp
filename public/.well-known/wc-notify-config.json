@@ -1,6 +1,8 @@
 {
-  "version": 1,
-  "lastModified": 1681235296477,
+  "schemaVersion": 1,
+  "name": "gm-dApp",
+  "description": "A simple gm notification dApp",
+  "icons": ["https://i.imgur.com/q9QDRXc.png"],
   "types": [
     {
       "name": "promotional",
@@ -22,11 +24,5 @@
       "name": "gm_hourly",
       "description": "Get notified every hour with a gm notification"
     }
-  ],
-  "metadata": {
-    "description": "A simple gm notification dApp",
-    "icons": ["https://i.imgur.com/q9QDRXc.png"],
-    "name": "gm-dApp",
-    "url": "https://dev.gm.walletconnect.com"
-  }
+  ]
 }
