@@ -6,7 +6,7 @@
   "id": "did:web:dev.gm.walletconnect.com",
   "verificationMethod": [
     {
-      "id": "did:web:dev.gm.walletconnect.com#key-0",
+      "id": "did:web:dev.gm.walletconnect.com#wc-notify-subscribe-key",
       "type": "JsonWebKey2020",
       "controller": "did:web:dev.gm.walletconnect.com",
       "publicKeyJwk": {
@@ -16,7 +16,7 @@
       }
     },
     {
-      "id": "did:web:dev.gm.walletconnect.com#key-1",
+      "id": "did:web:dev.gm.walletconnect.com#wc-notify-authentication-key",
       "type": "JsonWebKey2020",
       "controller": "did:web:dev.gm.walletconnect.com",
       "publicKeyJwk": {
@@ -26,6 +26,8 @@
       }
     }
   ],
-  "keyAgreement": ["did:web:dev.gm.walletconnect.com#key-0"],
-  "authentication": ["did:web:dev.gm.walletconnect.com#key-1"]
+  "keyAgreement": ["did:web:dev.gm.walletconnect.com#wc-notify-subscribe-key"],
+  "authentication": [
+    "did:web:dev.gm.walletconnect.com#wc-notify-authentication-key"
+  ]
 }
