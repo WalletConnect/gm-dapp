@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "name": "gm-dApp",
+  "name": "dev-gm-dapp",
   "description": "A simple gm notification dApp",
   "icons": ["https://i.imgur.com/q9QDRXc.png"],
   "types": [
