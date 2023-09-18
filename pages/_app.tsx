@@ -10,6 +10,7 @@ import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { mainnet } from "wagmi/chains";
 import { theme } from "../styles/theme";
 import Footer from "../components/core/Footer";
+import { useInitWeb3InboxClient } from "@web3inbox/widget-react";
 
 // 1. Get projectID at https://cloud.walletconnect.com
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
@@ -29,6 +30,13 @@ const wagmiConfig = createConfig({
 const ethereumClient = new EthereumClient(wagmiConfig, chains);
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const initialized = useInitWeb3InboxClient({
+    projectId,
+    domain: "dev.gm.walletconnect.com",
+  });
+
+  console.log({ initialized });
+
   return (
     <>
       <WagmiConfig config={wagmiConfig}>

@@ -1,12 +1,10 @@
 "use client";
 import { Box, Flex, keyframes, useColorMode } from "@chakra-ui/react";
 import {
-  W3iContext,
   W3iWidget,
-  W3iButton,
-  useManageW3iWidget,
-  useIsSubscribed,
+  useAccount as useW3iAccount,
 } from "@web3inbox/widget-react";
+import "@web3inbox/widget-react/dist/compiled.css";
 
 import type { NextPage } from "next";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -40,7 +38,8 @@ const Web3ModalButton = dynamic(
 
 const Home: NextPage = () => {
   const [view, changeView] = useState<"default" | "qr" | "signedIn">("default");
-  const { close: closeWidget, isOpen } = useManageW3iWidget();
+
+  // const { close: closeWidget, isOpen } = useManageW3iWidget();
   const { address, isConnected, connector } = useAccount({
     onDisconnect: () => {
       changeView("default");
@@ -50,16 +49,33 @@ const Home: NextPage = () => {
   const [currentAddress, setCurrentAddress] = useState<`0x${string}`>();
   const { signMessageAsync } = useSignMessage();
   const { handleSendNotification, isSending } = useSendNotifcation();
-  const isSubscribed = useIsSubscribed();
+  // const isSubscribed = useIsSubscribed();
   const [iconUrl, setIconUrl] = useState("");
   const { close, open } = useWeb3Modal();
   const { colorMode } = useColorMode();
   const ref = useRef(null);
-  console.log({ isOpen });
+
+  const signMessage = useCallback(
+    async (message: string) => {
+      const res = await signMessageAsync({
+        message,
+      });
+
+      return res as string;
+    },
+    [signMessageAsync]
+  );
+
+  const { account, setAccount } = useW3iAccount(signMessage);
+
+  console.log({ account });
+  // console.log({ isOpen });
   useEffect(() => {
     if (!address) return;
     setCurrentAddress(address);
-  }, [address]);
+    setAccount(`eip155:1:${address}`);
+    console.log("---ACCOUNT SET", `eip155:1:${address}`);
+  }, [address, setAccount]);
 
   useOnClickOutside(ref, () => {
     console.log("clicked outside");
@@ -82,17 +98,6 @@ const Home: NextPage = () => {
       console.log({ error });
     }
   }, [connector, open]);
-
-  const signMessage = useCallback(
-    async (message: string) => {
-      const res = await signMessageAsync({
-        message,
-      });
-
-      return res as string;
-    },
-    [signMessageAsync]
-  );
 
   const handleIsSubscribed = useCallback(async () => {
     if (!currentAddress) {
@@ -130,11 +135,11 @@ const Home: NextPage = () => {
     }
   }, [handleSendNotification, currentAddress]);
 
-  useEffect(() => {
-    if (isSubscribed) {
-      handleIsSubscribed();
-    }
-  }, [isSubscribed, handleIsSubscribed]);
+  // useEffect(() => {
+  //   if (isSubscribed) {
+  //     handleIsSubscribed();
+  //   }
+  // }, [isSubscribed, handleIsSubscribed]);
 
   useEffect(() => {
     if (currentAddress && isConnected) {
@@ -145,7 +150,7 @@ const Home: NextPage = () => {
   }, [currentAddress, changeView, close, isConnected]);
 
   return (
-    <W3iContext>
+    <>
       <Flex width={"100vw"}>
         <Flex
           position="fixed"
@@ -155,50 +160,15 @@ const Home: NextPage = () => {
           gap="16px"
           zIndex={1}
         >
-          <div
-            style={{
-              position: "relative",
-              zIndex: 99999999,
-            }}
-          >
-            <W3iButton theme={colorMode} />
-            <AnimatePresence initial={false}>
-              {isOpen && (
-                <Box
-                  ref={ref}
-                  as={motion.div}
-                  position="fixed"
-                  top="5em"
-                  left={{
-                    base: "10px",
-                    sm: isConnected ? "30%" : "37%",
-                    md: isConnected ? "50%" : "57%",
-                    lg: isConnected ? "65%" : "65%",
-                    xl: isConnected ? "70%" : "75%",
-                  }}
-                  zIndex={99999}
-                  animation={animation}
-                >
-                  <W3iWidget
-                    onMessage={console.log}
-                    onSubscriptionSettled={console.log}
-                    web3inboxUrl="https://web3inbox-dev-hidden.vercel.app"
-                    account={currentAddress}
-                    signMessage={async (message) => {
-                      const rs = await signMessage(message);
-                      return rs as string;
-                    }}
-                    dappIcon={iconUrl}
-                    connect={onSignInWithSign}
-                    dappName={"GM Dapp"}
-                    dappNotificationsDescription={"Subscribe to get GMs!"}
-                    settingsEnabled={false}
-                    chatEnabled={false}
-                  />
-                </Box>
-              )}
-            </AnimatePresence>
-          </div>
+          <Box maxH="600px" maxW="400px" position="fixed" top={10} right={10}>
+            {currentAddress && (
+              <W3iWidget
+                account={currentAddress}
+                onSign={signMessage}
+                onConnect={onSignInWithSign}
+              />
+            )}
+          </Box>
 
           {isConnected && (
             <Web3ModalButton
@@ -217,7 +187,7 @@ const Home: NextPage = () => {
       >
         {view === "default" ? <DefaultView /> : <SignedInView />}
       </Flex>
-    </W3iContext>
+    </>
   );
 };
 
