@@ -16,6 +16,10 @@
     {
       "name": "alerts",
       "description": "Get notified when urgent action is required from your account"
+    },
+    {
+      "name": "gm_hourly",
+      "description": "Get notified every hour with a gm notification"
     }
   ],
   "name": "gm-dapp",
