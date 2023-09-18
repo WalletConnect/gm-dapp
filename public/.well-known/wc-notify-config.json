@@ -1,6 +1,5 @@
 {
-  "version": 1,
-  "lastModified": 1681235296477,
+  "schemaVersion": 1,
   "types": [
     {
       "name": "promotional",
@@ -17,16 +16,11 @@
     {
       "name": "alerts",
       "description": "Get notified when urgent action is required from your account"
-    },
-    {
-      "name": "gm_hourly",
-      "description": "Get notified every hour with a gm notification"
     }
   ],
-  "metadata": {
-    "description": "A simple gm notification dApp",
-    "icons": ["https://i.imgur.com/q9QDRXc.png"],
-    "name": "gm-dApp",
-    "url": "https://notify.gm.walletconnect.com"
-  }
+  "name": "gm-dapp",
+  "icons": [
+    "https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA/ae213078-71b0-49ac-17e9-294719d92e00/md"
+  ],
+  "description": "Get a gm every hour"
 }
