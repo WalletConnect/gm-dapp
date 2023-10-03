@@ -1,8 +1,8 @@
 export const PROJECT_METADATA = {
   description: "A simple gm notification dApp",
-  icons: ["https://i.imgur.com/q9QDRXc.png"],
-  name: "gm-dApp",
-  url: "https://notify.gm.walletconnect.com",
+  icons: ["https://gm.walletconnect.com/gm.png"],
+  name: "gm!",
+  url: "https://gm.walletconnect.com",
 };
 
 export const NOTIFICATION_BODY = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam lacinia blandit dui non sollicitudin. Duis sollicitudin euismod leo, a venenatis arcu condimentum eget. Duis congue accumsan mi vel malesuada. Proin quis felis tempus, tristique turpis vel, accumsan risus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Duis nisi velit, gravida nec ligula eu, egestas consequat augue. Phasellus dapibus laoreet neque, ut interdum lectus blandit et. Aenean vitae quam quis neque vehicula egestas tempor sit amet orci. Mauris congue malesuada sodales. Aliquam erat volutpat. Donec et ipsum justo.

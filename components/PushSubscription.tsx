@@ -1,14 +1,14 @@
 import { Flex } from "@chakra-ui/react";
-import { useIsSubscribed, useManageW3iWidget } from "@web3inbox/widget-react";
-import React, { FC } from "react";
-import { useSnapshot } from "valtio";
-import { widgetStore } from "../stores/widgetStore";
+import { useManageSubscription, useW3iAccount } from "@web3inbox/widget-react";
+import React from "react";
 import { NOTIFICATION_BODY } from "../utils/constants";
 import useSendNotifcation from "../utils/useSendNotification";
 import GmButton from "./core/GmButton";
 import SendIcon from "./core/SendIcon";
 import SubscribeIcon from "./core/SubscribeIcon";
-import { useAccount } from "wagmi";
+import UnsubscribeIcon from "./core/UnsubscribeIcon";
+import Preferences from "./Preferences";
+import Notifications from "./Notifications";
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 if (!projectId) {
@@ -16,32 +16,52 @@ if (!projectId) {
 }
 
 const PushSubscription = ({ address }: { address: string }) => {
-  const isSubscribed = useIsSubscribed();
-  const { open } = useManageW3iWidget();
+  const { account } = useW3iAccount();
+
+  const {
+    isSubscribed,
+    subscribe,
+    unsubscribe,
+    isSubscribing,
+    isUnsubscribing,
+  } = useManageSubscription(account);
   const { handleSendNotification, isSending } = useSendNotifcation();
-  const { isSubscribed: hasSubscribed } = useSnapshot(widgetStore);
 
   return (
     <Flex flexDirection="column" gap={2} mb="24px">
-      {(!isSubscribed || !hasSubscribed) && (
-        <GmButton leftIcon={<SubscribeIcon />} onClick={open}>
+      {isSubscribed ? (
+        <GmButton
+          leftIcon={<UnsubscribeIcon />}
+          isDisabled={isUnsubscribing}
+          isLoading={isUnsubscribing}
+          onClick={unsubscribe}
+        >
+          Unsubscribe
+        </GmButton>
+      ) : (
+        <GmButton
+          leftIcon={<SubscribeIcon />}
+          isDisabled={isSubscribing}
+          isLoading={isSubscribing}
+          onClick={subscribe}
+        >
           Subscribe
         </GmButton>
       )}
       <GmButton
         leftIcon={<SendIcon isDisabled={!isSubscribed || isSending} />}
         onClick={async () => {
-          if (!address) {
+          if (!account) {
             return;
           }
           return handleSendNotification({
-            address,
+            account,
             notification: {
               title: "gm!",
-              body: NOTIFICATION_BODY,
+              body: "This is a test notification",
               // href already contains the trailing slash
-              icon: `${window.location.href}gmMemesArtwork.png`,
-              url: "https://notify.gm.walletconnect.com/",
+              icon: `https://gm.walletconnect.com/gm.png`,
+              url: "https://gm.walletconnect.com/",
               type: "gm_hourly",
             },
           });
@@ -50,6 +70,8 @@ const PushSubscription = ({ address }: { address: string }) => {
       >
         Send notification
       </GmButton>
+      <Notifications />
+      <Preferences />
     </Flex>
   );
 };

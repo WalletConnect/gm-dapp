@@ -13,18 +13,6 @@ export const theme = extendTheme({
     }),
   },
   colors: {
-    gray: {
-      50: "#E1EEFF",
-      100: "#B5D6FF",
-      200: "#89BDFF",
-      300: "#5CA5FF",
-      400: "#3396FF", // Our base color #3396FF
-      500: "#1A7EE6",
-      600: "#0064CC",
-      700: "#004C99",
-      800: "#003366",
-      900: "#001A33",
-    },
     brand: {
       50: "#E1EEFF",
       100: "#B5D6FF",

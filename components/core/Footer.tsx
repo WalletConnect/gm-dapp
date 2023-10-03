@@ -17,7 +17,7 @@ function Footer() {
       gap="4px"
     >
       <WalletConnectIcon />
-      <Text fontSize="14px" fontWeight="500" color={fontColor}>
+      <Text fontSize="14px" fontWeight="500" color={fontColor} mr="16px">
         WalletConnect
       </Text>
 

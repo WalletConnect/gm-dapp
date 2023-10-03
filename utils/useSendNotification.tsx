@@ -1,11 +1,11 @@
-import { Flex, Text, useToast } from "@chakra-ui/react";
+import { Text, useToast } from "@chakra-ui/react";
 import { useCallback, useState } from "react";
-import { useAccount } from "wagmi";
 import StatusIcon from "../components/core/StatusIcon";
 import useThemeColor from "../styles/useThemeColors";
+import ToastWrapper from "../components/core/ToastWrapper";
 
 interface INotification {
-  address: string;
+  account: string;
   notification: {
     title: string;
     body: string;
@@ -17,16 +17,15 @@ interface INotification {
 function useSendNotifcation() {
   const [isSending, setIsSending] = useState<boolean>(false);
   const toast = useToast();
-  const { defaultFontColor, cardBgColor, borderColor } = useThemeColor();
 
   const handleSendNotification = useCallback(
-    async ({ address, notification }: INotification) => {
+    async ({ account, notification }: INotification) => {
       setIsSending(true);
       try {
         // Construct the payload, including the target `accounts`
         // that should receive the push notification.
         const notificationPayload = {
-          accounts: [`eip155:1:${address}`],
+          accounts: [account],
           notification,
         };
 
@@ -50,27 +49,15 @@ function useSendNotifcation() {
             justifyContent: "center",
           },
           render: (props) => (
-            <Flex
-              mt="16px"
-              h="40px"
-              borderRadius="100px"
-              alignItems="center"
-              w="fit-content"
-              color={defaultFontColor}
-              border={`solid 1px ${borderColor}`}
-              bgColor={cardBgColor}
-              p="8px 16px 8px 8px"
-              gap="8px"
-              boxShadow="0px 14px 64px -4px rgba(0, 0, 0, 0.08), 0px 8px 22px -6px rgba(0, 0, 0, 0.08)"
-            >
+            <ToastWrapper>
               <StatusIcon status={success ? "success" : "error"} />
               <Text fontSize={"14px"} fontWeight={500}>
                 {message ??
                   (success
-                    ? `Message sent`
-                    : "Message failed. Did you set up a subscription via the widget first?")}
+                    ? notification.title
+                    : `Message failed. Is ${notification.type} enabled in your preferences ?`)}
               </Text>
-            </Flex>
+            </ToastWrapper>
           ),
         });
       } catch (error: any) {
@@ -83,7 +70,7 @@ function useSendNotifcation() {
         });
       }
     },
-    [toast, borderColor, defaultFontColor, cardBgColor]
+    [toast]
   );
 
   return {

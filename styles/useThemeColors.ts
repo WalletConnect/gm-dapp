@@ -28,6 +28,7 @@ function useThemeColor() {
   );
 
   const defaultFontColor = useColorModeValue("#191A1A", "#FFFFFF");
+  const helperFontColor = useColorModeValue("#8B9797", "#788080");
   const actionTextColor = useColorModeValue("#474D4D", "#A8B1B1");
   const cardFooterBgColor = useColorModeValue(
     "rgba(6, 43, 43, 0.10)",
@@ -61,6 +62,7 @@ function useThemeColor() {
     activeButtonBgColor,
     disabledButtonBgColor,
     disabledButtonTextColor,
+    helperFontColor,
   };
 }
 

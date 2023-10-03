@@ -6,8 +6,14 @@ import {
   Spinner,
   Text,
   useClipboard,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import truncate from "smart-truncate";
+import {
+  useInitWeb3InboxClient,
+  useManageSubscription,
+  useW3iAccount,
+} from "@web3inbox/widget-react";
 
 import PushSubscription from "../components/PushSubscription";
 import CopyIcon from "../components/core/CopyIcon";
@@ -15,15 +21,20 @@ import GmCard from "../components/core/GmCard";
 import Zorb from "../components/core/Zorb";
 import useThemeColor from "../styles/useThemeColors";
 import { useAccount } from "wagmi";
-import { useIsSubscribed } from "@web3inbox/widget-react";
 
 const SignedInView: React.FC = () => {
+  const { account, setAccount } = useW3iAccount();
+  const { isSubscribed } = useManageSubscription(account);
   const { address } = useAccount({
     onDisconnect: () => {
+      setAccount("");
       window.location.reload();
     },
   });
-  const isSubscribed = useIsSubscribed();
+  const zorbBorder = useColorModeValue(
+    "rgba(6, 43, 43, 0.05)",
+    "rgba(255, 255, 255, 0.05)"
+  );
   const { onCopy, hasCopied } = useClipboard(address ?? "");
   const { actionTextColor, defaultFontColor } = useThemeColor();
 
@@ -31,7 +42,7 @@ const SignedInView: React.FC = () => {
     <Box w="360px">
       <GmCard>
         <Flex justifyContent="center" pt="40px" pb="24px">
-          <Box border="8px solid rgba(6, 43, 43, 0.05)" borderRadius={"64px"}>
+          <Box border={`8px solid ${zorbBorder}`} borderRadius={"64px"}>
             <Zorb width="64px" height="64px" />
           </Box>
         </Flex>
