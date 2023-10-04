@@ -8,6 +8,7 @@ import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi/react";
 import { theme } from "../styles/theme";
 import Footer from "../components/core/Footer";
 import { PROJECT_METADATA } from "../utils/constants";
+import Head from "next/head";
 
 // 1. Get projectID at https://cloud.walletconnect.com
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
@@ -27,6 +28,9 @@ createWeb3Modal({ wagmiConfig, projectId, chains });
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
+      <Head>
+        <title>gm!</title>
+      </Head>
       <WagmiConfig config={wagmiConfig}>
         <ChakraProvider theme={theme}>
           <Box
