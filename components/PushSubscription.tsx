@@ -1,8 +1,7 @@
 import { Flex } from "@chakra-ui/react";
 import { useManageSubscription, useW3iAccount } from "@web3inbox/widget-react";
 import React from "react";
-import { NOTIFICATION_BODY } from "../utils/constants";
-import useSendNotifcation from "../utils/useSendNotification";
+import useSendNotification from "../utils/useSendNotification";
 import GmButton from "./core/GmButton";
 import SendIcon from "./core/SendIcon";
 import SubscribeIcon from "./core/SubscribeIcon";
@@ -25,7 +24,7 @@ const PushSubscription = ({ address }: { address: string }) => {
     isSubscribing,
     isUnsubscribing,
   } = useManageSubscription(account);
-  const { handleSendNotification, isSending } = useSendNotifcation();
+  const { handleSendNotification, isSending } = useSendNotification();
 
   return (
     <Flex flexDirection="column" gap={2} mb="24px">

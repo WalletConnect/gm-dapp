@@ -14,7 +14,7 @@ interface INotification {
     type: string;
   };
 }
-function useSendNotifcation() {
+function useSendNotification() {
   const [isSending, setIsSending] = useState<boolean>(false);
   const toast = useToast();
 
@@ -79,4 +79,4 @@ function useSendNotifcation() {
   };
 }
 
-export default useSendNotifcation;
+export default useSendNotification;

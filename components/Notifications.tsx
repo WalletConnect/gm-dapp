@@ -27,7 +27,7 @@ import Link from "next/link";
 import useThemeColor from "../styles/useThemeColors";
 import NotificationsIcon from "./core/NotificationsIcon";
 import SendIcon from "./core/SendIcon";
-import useSendNotifcation from "../utils/useSendNotification";
+import useSendNotification from "../utils/useSendNotification";
 
 function Notifications() {
   const { account } = useW3iAccount();
@@ -36,7 +36,7 @@ function Notifications() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { defaultFontColor, cardBgColor, borderColor } = useThemeColor();
   const { messages, deleteMessage } = useMessages(account);
-  const { handleSendNotification, isSending } = useSendNotifcation();
+  const { handleSendNotification, isSending } = useSendNotification();
   return (
     <>
       <GmButton

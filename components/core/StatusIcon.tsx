@@ -42,9 +42,9 @@ function StatusIcon({ status }: IStatusIconProps) {
           <path
             d="M4 4L12 12M4 12L12 4"
             stroke="#F03C18"
-            stroke-width="1.25"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="1.25"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
       )}

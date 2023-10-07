@@ -9,11 +9,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import truncate from "smart-truncate";
-import {
-  useInitWeb3InboxClient,
-  useManageSubscription,
-  useW3iAccount,
-} from "@web3inbox/widget-react";
+import { useManageSubscription, useW3iAccount } from "@web3inbox/widget-react";
 
 import PushSubscription from "../components/PushSubscription";
 import CopyIcon from "../components/core/CopyIcon";
