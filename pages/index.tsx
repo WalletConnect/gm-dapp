@@ -12,7 +12,7 @@ import {
 import DefaultView from "../views/DefaultView";
 import SignedInView from "../views/SignedInView";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
-import { useAccount, useSignMessage } from "wagmi";
+import { useAccount } from "wagmi";
 import useSendNotification from "../utils/useSendNotification";
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
@@ -27,8 +27,6 @@ const Home: NextPage = () => {
   const {
     account,
     setAccount,
-    register: registerIdentity,
-    identityKey,
   } = useW3iAccount();
   const { isSubscribed } = useManageSubscription(account);
   const { address, isConnected } = useAccount({
@@ -36,42 +34,15 @@ const Home: NextPage = () => {
       changeView("default");
     },
   });
-  const { signMessageAsync } = useSignMessage();
   const [currentAddress, setCurrentAddress] = useState<`0x${string}`>();
   const { handleSendNotification } = useSendNotification();
   const { close } = useWeb3Modal();
-
-  const signMessage = useCallback(
-    async (message: string) => {
-      const res = await signMessageAsync({
-        message,
-      });
-
-      return res as string;
-    },
-    [signMessageAsync]
-  );
 
   // We need to set the account as soon as the user is connected
   useEffect(() => {
     if (!address) return;
     setAccount(`eip155:1:${address}`);
-  }, [signMessage, address, setAccount]);
-
-  const handleRegistration = useCallback(async () => {
-    if (!account) return;
-    try {
-      await registerIdentity(signMessage);
-    } catch (registerIdentityError) {
-      console.error({ registerIdentityError });
-    }
-  }, [signMessage, registerIdentity, account]);
-
-  useEffect(() => {
-    if (!identityKey) {
-      handleRegistration();
-    }
-  }, [handleRegistration, identityKey]);
+  }, [address, setAccount]);
 
   useEffect(() => {
     if (!address) return;
