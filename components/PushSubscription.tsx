@@ -1,6 +1,6 @@
 import { Flex } from "@chakra-ui/react";
 import { useManageSubscription, useW3iAccount } from "@web3inbox/widget-react";
-import React from "react";
+import React, { useCallback } from "react";
 import useSendNotification from "../utils/useSendNotification";
 import GmButton from "./core/GmButton";
 import SendIcon from "./core/SendIcon";
@@ -8,6 +8,7 @@ import SubscribeIcon from "./core/SubscribeIcon";
 import UnsubscribeIcon from "./core/UnsubscribeIcon";
 import Preferences from "./Preferences";
 import Notifications from "./Notifications";
+import { useSignMessage } from "wagmi";
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 if (!projectId) {
@@ -15,7 +16,7 @@ if (!projectId) {
 }
 
 const PushSubscription = ({ address }: { address: string }) => {
-  const { account } = useW3iAccount();
+  const { account, register, isRegistered } = useW3iAccount();
 
   const {
     isSubscribed,
@@ -25,6 +26,27 @@ const PushSubscription = ({ address }: { address: string }) => {
     isUnsubscribing,
   } = useManageSubscription(account);
   const { handleSendNotification, isSending } = useSendNotification();
+  
+  const { signMessageAsync } = useSignMessage();
+  const signMessage = useCallback(
+    async (message: string) => {
+      const res = await signMessageAsync({
+        message,
+      });
+
+      return res as string;
+    },
+    [signMessageAsync]
+  );
+
+  const handleSubscribe = useCallback(() => {
+    if(isRegistered) {
+      return subscribe()
+    }
+    else {
+      return register(signMessage).then(subscribe)
+    }
+  }, [subscribe, signMessage, register, isRegistered])
 
   return (
     <Flex flexDirection="column" gap={2} mb="24px">
@@ -42,7 +64,7 @@ const PushSubscription = ({ address }: { address: string }) => {
           leftIcon={<SubscribeIcon />}
           isDisabled={isSubscribing}
           isLoading={isSubscribing}
-          onClick={subscribe}
+          onClick={handleSubscribe}
         >
           Subscribe
         </GmButton>

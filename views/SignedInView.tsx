@@ -16,13 +16,10 @@ import CopyIcon from "../components/core/CopyIcon";
 import GmCard from "../components/core/GmCard";
 import Zorb from "../components/core/Zorb";
 import useThemeColor from "../styles/useThemeColors";
-import { useAccount, useSignMessage } from "wagmi";
-import { useCallback } from "react";
-import GmButton from "../components/core/GmButton";
-import SettingsIcon from "../components/core/SettingsIcon";
+import { useAccount } from "wagmi";
 
 const SignedInView: React.FC = () => {
-  const { account, setAccount, identityKey, register } = useW3iAccount();
+  const { account, setAccount } = useW3iAccount();
   const { isSubscribed } = useManageSubscription(account);
   const { address } = useAccount({
     onDisconnect: () => {
@@ -31,24 +28,11 @@ const SignedInView: React.FC = () => {
     },
   });
 
-  console.log({identityKey})
-
   const zorbBorder = useColorModeValue(
     "rgba(6, 43, 43, 0.05)",
     "rgba(255, 255, 255, 0.05)"
   );
   
-  const { signMessageAsync } = useSignMessage();
-  const signMessage = useCallback(
-    async (message: string) => {
-      const res = await signMessageAsync({
-        message,
-      });
-
-      return res as string;
-    },
-    [signMessageAsync]
-  );
   const { onCopy, hasCopied } = useClipboard(address ?? "");
   const { actionTextColor, defaultFontColor } = useThemeColor();
 
@@ -94,17 +78,7 @@ const SignedInView: React.FC = () => {
             ? "You are subscribed to GM. Now you can send test notifications from the dApp."
             : "Connect your wallet to the widget and enable notifications first in order to send and receive notifications."}
         </Text>
-      {identityKey && address ? null : (
-	<GmButton
-	  mb="24px"
-	  leftIcon={<SettingsIcon isDisabled={false} />}
-          isDisabled={false}
-	  onClick={() => register(signMessage)}
-	>
-	  Register
-	  </GmButton>
-      )}
-        {address && identityKey && <PushSubscription address={address} />}
+        {address && <PushSubscription address={address} />}
       </GmCard>
     </Box>
   );
