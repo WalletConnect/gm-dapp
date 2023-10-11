@@ -27,10 +27,12 @@ const SignedInView: React.FC = () => {
       window.location.reload();
     },
   });
+
   const zorbBorder = useColorModeValue(
     "rgba(6, 43, 43, 0.05)",
     "rgba(255, 255, 255, 0.05)"
   );
+  
   const { onCopy, hasCopied } = useClipboard(address ?? "");
   const { actionTextColor, defaultFontColor } = useThemeColor();
 
