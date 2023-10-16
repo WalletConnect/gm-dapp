@@ -40,12 +40,7 @@ const PushSubscription = ({ address }: { address: string }) => {
   );
 
   const handleSubscribe = useCallback(() => {
-    if(isRegistered) {
-      return subscribe()
-    }
-    else {
-      return register(signMessage).then(subscribe)
-    }
+    return register(signMessage).then(subscribe)
   }, [subscribe, signMessage, register, isRegistered])
 
   return (
