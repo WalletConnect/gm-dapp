@@ -26,7 +26,7 @@ const DefaultView = () => {
           justifyContent="center"
         >
           <Image
-            style={{ width: "80px", height: "80px" }}
+            style={{ width: "80px", height: "80px", borderRadius: "50%", border: "solid 1px #d6d6d6" }}
             src="/gm.png"
             alt="gm"
           />
