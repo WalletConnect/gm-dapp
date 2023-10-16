@@ -1,6 +1,6 @@
 import { Flex, Spinner, Text } from "@chakra-ui/react";
 import { useManageSubscription, useW3iAccount } from "@web3inbox/widget-react";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useSendNotification from "../utils/useSendNotification";
 import GmButton from "./core/GmButton";
 import SendIcon from "./core/SendIcon";
@@ -17,8 +17,9 @@ if (!projectId) {
 }
 
 const PushSubscription = ({ address }: { address: string }) => {
-  const { account, register, isRegistered } = useW3iAccount();
+  const { account, register, isRegistered, isRegistering } = useW3iAccount();
   const { actionTextColor } = useThemeColor();
+  const [cancelledRegistry, setCancelledRegistry] = useState(false);
 
   const {
     isSubscribed,
@@ -31,9 +32,18 @@ const PushSubscription = ({ address }: { address: string }) => {
   
   const { signMessageAsync } = useSignMessage();
 
+  const handleRegister = useCallback(() => {
+    setCancelledRegistry(false);
+    console.log("attempting to register")
+    register((m) => signMessageAsync({message: m})).catch((m) => {
+      console.error(m);
+      setCancelledRegistry(true);
+    });
+  }, [register, signMessageAsync])
+
   useEffect(() => {
     if(!isRegistered) {
-      register((m) => signMessageAsync({message: m}))
+      handleRegister()
     }
   }, [register, signMessageAsync, isRegistered])
 
@@ -56,7 +66,15 @@ const PushSubscription = ({ address }: { address: string }) => {
         >
 	  Sign the message to allow subscribing
         </Text>
-	<Spinner />
+	{cancelledRegistry ? (
+	  <GmButton
+            leftIcon={<SubscribeIcon />}
+            isLoading={false}
+            onClick={handleRegister}
+	  >
+	    Register
+	  </GmButton>
+	) : <Spinner />}
       </Flex>
     )
   }
