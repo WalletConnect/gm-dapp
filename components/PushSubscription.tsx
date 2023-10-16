@@ -1,4 +1,4 @@
-import { Flex, Spinner } from "@chakra-ui/react";
+import { Flex, Spinner, Text } from "@chakra-ui/react";
 import { useManageSubscription, useW3iAccount } from "@web3inbox/widget-react";
 import React, { useCallback, useEffect } from "react";
 import useSendNotification from "../utils/useSendNotification";
@@ -9,6 +9,7 @@ import UnsubscribeIcon from "./core/UnsubscribeIcon";
 import Preferences from "./Preferences";
 import Notifications from "./Notifications";
 import { useSignMessage } from "wagmi";
+import useThemeColor from "../styles/useThemeColors";
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 if (!projectId) {
@@ -16,7 +17,8 @@ if (!projectId) {
 }
 
 const PushSubscription = ({ address }: { address: string }) => {
-  const { account, register, isRegistered, isRegistering } = useW3iAccount();
+  const { account, register, isRegistered } = useW3iAccount();
+  const { actionTextColor } = useThemeColor();
 
   const {
     isSubscribed,
@@ -43,7 +45,17 @@ const PushSubscription = ({ address }: { address: string }) => {
 
   if(!isRegistered) {
     return (
-      <Flex flexDirection="column" gap={2} mb="24px">
+      <Flex align="center" justify="center" flexDirection="column" gap={2} mb="24px">
+        <Text
+          textAlign={"center"}
+          color={actionTextColor}
+          fontSize="14px"
+          fontWeight={500}
+          mb="24px"
+          px="32px"
+        >
+	  Sign the message to allow subscribing
+        </Text>
 	<Spinner />
       </Flex>
     )
