@@ -1,6 +1,6 @@
-import { Flex } from "@chakra-ui/react";
+import { Flex, Spinner } from "@chakra-ui/react";
 import { useManageSubscription, useW3iAccount } from "@web3inbox/widget-react";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import useSendNotification from "../utils/useSendNotification";
 import GmButton from "./core/GmButton";
 import SendIcon from "./core/SendIcon";
@@ -16,7 +16,7 @@ if (!projectId) {
 }
 
 const PushSubscription = ({ address }: { address: string }) => {
-  const { account, register, isRegistered } = useW3iAccount();
+  const { account, register, isRegistered, isRegistering } = useW3iAccount();
 
   const {
     isSubscribed,
@@ -28,20 +28,27 @@ const PushSubscription = ({ address }: { address: string }) => {
   const { handleSendNotification, isSending } = useSendNotification();
   
   const { signMessageAsync } = useSignMessage();
-  const signMessage = useCallback(
-    async (message: string) => {
-      const res = await signMessageAsync({
-        message,
-      });
 
-      return res as string;
-    },
-    [signMessageAsync]
-  );
+  useEffect(() => {
+    if(!isRegistered) {
+      register((m) => signMessageAsync({message: m}))
+    }
+  }, [register, signMessageAsync, isRegistered])
 
   const handleSubscribe = useCallback(() => {
-    return register(signMessage).then(subscribe)
-  }, [subscribe, signMessage, register, isRegistered])
+    if(isRegistered) {
+      return subscribe()
+    }
+  }, [subscribe, isRegistered])
+
+  if(!isRegistered) {
+    return (
+      
+    <Flex flexDirection="column" gap={2} mb="24px">
+      <Spinner />
+    </Flex>
+    )
+  }
 
   return (
     <Flex flexDirection="column" gap={2} mb="24px">
