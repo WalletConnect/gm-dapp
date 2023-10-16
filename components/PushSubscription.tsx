@@ -43,10 +43,9 @@ const PushSubscription = ({ address }: { address: string }) => {
 
   if(!isRegistered) {
     return (
-      
-    <Flex flexDirection="column" gap={2} mb="24px">
-      <Spinner />
-    </Flex>
+      <Flex flexDirection="column" gap={2} mb="24px">
+	<Spinner />
+      </Flex>
     )
   }
 
