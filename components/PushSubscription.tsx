@@ -1,6 +1,6 @@
-import { Flex } from "@chakra-ui/react";
+import { Flex, Spinner, Text } from "@chakra-ui/react";
 import { useManageSubscription, useW3iAccount } from "@web3inbox/widget-react";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useSendNotification from "../utils/useSendNotification";
 import GmButton from "./core/GmButton";
 import SendIcon from "./core/SendIcon";
@@ -9,6 +9,7 @@ import UnsubscribeIcon from "./core/UnsubscribeIcon";
 import Preferences from "./Preferences";
 import Notifications from "./Notifications";
 import { useSignMessage } from "wagmi";
+import useThemeColor from "../styles/useThemeColors";
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 if (!projectId) {
@@ -16,7 +17,9 @@ if (!projectId) {
 }
 
 const PushSubscription = ({ address }: { address: string }) => {
-  const { account, register, isRegistered } = useW3iAccount();
+  const { account, register, isRegistered, isRegistering } = useW3iAccount();
+  const { actionTextColor } = useThemeColor();
+  const [cancelledRegistry, setCancelledRegistry] = useState(false);
 
   const {
     isSubscribed,
@@ -28,25 +31,53 @@ const PushSubscription = ({ address }: { address: string }) => {
   const { handleSendNotification, isSending } = useSendNotification();
   
   const { signMessageAsync } = useSignMessage();
-  const signMessage = useCallback(
-    async (message: string) => {
-      const res = await signMessageAsync({
-        message,
-      });
 
-      return res as string;
-    },
-    [signMessageAsync]
-  );
+  const handleRegister = useCallback(() => {
+    setCancelledRegistry(false);
+    console.log("attempting to register")
+    register((m) => signMessageAsync({message: m})).catch((m) => {
+      console.error(m);
+      setCancelledRegistry(true);
+    });
+  }, [register, signMessageAsync])
+
+  useEffect(() => {
+    if(!isRegistered) {
+      handleRegister()
+    }
+  }, [register, signMessageAsync, isRegistered])
 
   const handleSubscribe = useCallback(() => {
     if(isRegistered) {
       return subscribe()
     }
-    else {
-      return register(signMessage).then(subscribe)
-    }
-  }, [subscribe, signMessage, register, isRegistered])
+  }, [subscribe, isRegistered])
+
+  if(!isRegistered) {
+    return (
+      <Flex align="center" justify="center" flexDirection="column" gap={2} mb="24px">
+        <Text
+          textAlign={"center"}
+          color={actionTextColor}
+          fontSize="14px"
+          fontWeight={500}
+          mb="24px"
+          px="32px"
+        >
+	  Sign the message to allow subscribing
+        </Text>
+	{cancelledRegistry ? (
+	  <GmButton
+            leftIcon={<SubscribeIcon />}
+            isLoading={false}
+            onClick={handleRegister}
+	  >
+	    Register
+	  </GmButton>
+	) : <Spinner />}
+      </Flex>
+    )
+  }
 
   return (
     <Flex flexDirection="column" gap={2} mb="24px">

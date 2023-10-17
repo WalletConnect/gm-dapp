@@ -20,6 +20,7 @@ const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
 const Home: NextPage = () => {
   const [view, changeView] = useState<"default" | "qr" | "signedIn">("default");
   useInitWeb3InboxClient({
+    isLimited: true,
     projectId,
     domain: "gm.walletconnect.com",
   });
