@@ -29,7 +29,8 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>gm!</title>
+        <title>GM Dapp</title>
+        <link rel="shortcut icon" href="/gm.png" />
       </Head>
       <WagmiConfig config={wagmiConfig}>
         <ChakraProvider theme={theme}>

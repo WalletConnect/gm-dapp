@@ -1,4 +1,4 @@
-# React GM dApp (React, Typescript, Next.js, Ethers)
+# React GM Dapp (React, Typescript, Next.js, Ethers)
 
 🔗 Live dapp demo - https://gm.walletconnect.com/ <br />
 🔗 Live wallet demo - https://react-auth-wallet-git-feat-push-wallet-walletconnect1.vercel.app/ <br />
