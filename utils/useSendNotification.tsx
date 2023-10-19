@@ -7,6 +7,7 @@ import ToastWrapper from "../components/core/ToastWrapper";
 interface INotification {
   account: string;
   notification: {
+    friendly_type: string;
     title: string;
     body: string;
     icon: string;
@@ -55,7 +56,7 @@ function useSendNotification() {
                 {message ??
                   (success
                     ? notification.title
-                    : `Message failed. Is ${notification.type} enabled in your preferences ?`)}
+                    : `Message failed. Is ${notification.friendly_type} enabled in your preferences ?`)}
               </Text>
             </ToastWrapper>
           ),
