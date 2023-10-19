@@ -114,7 +114,7 @@ const PushSubscription = ({ address }: { address: string }) => {
               // href already contains the trailing slash
               icon: `https://gm.walletconnect.com/gm.png`,
               url: "https://gm.walletconnect.com/",
-              friendly_type: "gm_hourly",
+              friendly_type: "GM hourly",
               // id for gm hourly
               type: "cad9a52d-9b0f-4aed-9cca-3e9568a079f9",
             },
