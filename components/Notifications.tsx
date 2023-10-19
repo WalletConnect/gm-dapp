@@ -83,7 +83,8 @@ function Notifications() {
                           // href already contains the trailing slash
                           icon: `https://gm.walletconnect.com/gm.png`,
                           url: "https://gm.walletconnect.com/",
-                          type: "gm_hourly",
+                          // id for gm hourly
+                          type: "cad9a52d-9b0f-4aed-9cca-3e9568a079f9",
                         },
                       });
                     }}
