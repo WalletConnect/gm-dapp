@@ -70,6 +70,7 @@ const Home: NextPage = () => {
             body: "You successfully subscribed to hourly gm notifications.",
             icon: `${window.location.origin}/gm.png`,
             url: window.location.origin,
+            friendly_type: "GM hourly",
             // id for gm hourly
             type: "cad9a52d-9b0f-4aed-9cca-3e9568a079f9",
           },
