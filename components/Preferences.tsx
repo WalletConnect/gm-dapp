@@ -55,7 +55,7 @@ function Preferences() {
 
   const onSubmitPreferences = handleSubmit(async (formData) => {
     const enabledScopes = Object.entries(formData)
-      .filter(([key, isEnabled]) => isEnabled)
+      .filter(([_, isEnabled]) => isEnabled)
       .map(([key]) => key);
     try {
       const isUpdated = await updateScopes(enabledScopes);
@@ -121,16 +121,16 @@ function Preferences() {
           <ModalCloseButton rounded="full" mt={2} mr="12px" />
 
           <ModalBody display="flex" gap="10px" flexDir="column">
-            {Object.entries(scopes)?.map(([scopeKey, scope]) => {
+            {Object.entries(scopes)?.map(([scopeId, scope]) => {
               return (
                 <Flex
-                  key={scopeKey}
+                  key={scopeId}
                   alignItems="flex-start"
                   gap="20px"
                   alignSelf="stretch"
                 >
                   <Box flexGrow={1}>
-                    <Text fontWeight={600}>{scopeKey}</Text>
+                    <Text fontWeight={600}>{scope.name}</Text>
                     <Text fontSize="14px" color={helperFontColor}>
                       {scope.description}
                     </Text>
@@ -138,9 +138,9 @@ function Preferences() {
                   <Switch
                     size="lg"
                     colorScheme="brand"
-                    id={scopeKey}
+                    id={scopeId}
                     defaultChecked={(scope as any).enabled}
-                    {...register(scopeKey)}
+                    {...register(scopeId)}
                   />
                 </Flex>
               );
