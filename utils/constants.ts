@@ -1,7 +1,7 @@
 export const PROJECT_METADATA = {
   description: "A simple gm notification dApp",
   icons: ["https://gm.walletconnect.com/gm.png"],
-  name: "gm!",
+  name: "GM Dapp",
   url: "https://gm.walletconnect.com",
 };
 
