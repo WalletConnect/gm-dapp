@@ -114,9 +114,9 @@ const PushSubscription = ({ address }: { address: string }) => {
               // href already contains the trailing slash
               icon: `https://gm.walletconnect.com/gm.png`,
               url: "https://gm.walletconnect.com/",
-              friendly_type: "GM hourly",
-              // id for gm hourly
-              type: "cad9a52d-9b0f-4aed-9cca-3e9568a079f9",
+              friendly_type: "Manual",
+              // id for manual
+              type: "eb35fbb8-9b71-4b9e-be3f-62a246e6c992",
             },
           });
         }}

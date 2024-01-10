@@ -50,58 +50,6 @@ const Home: NextPage = () => {
     setCurrentAddress(address);
   }, [address]);
 
-  const handleIsSubscribed = useCallback(async () => {
-    if (!account) {
-      return;
-    }
-
-    try {
-      const subscriberRes = await fetch(`/api/subscriber?account=${account}`);
-      if (subscriberRes.status !== 200) {
-        throw new Error("Failed to fetch subscriber");
-      }
-      const { subscriber } = await subscriberRes.json();
-
-      if (subscriber && !subscriber.hasBeenWelcomed) {
-        await handleSendNotification({
-          account,
-          notification: {
-            title: "Welcome to gm!",
-            body: "You successfully subscribed to hourly gm notifications.",
-            icon: `${window.location.origin}/gm.png`,
-            url: window.location.origin,
-            friendly_type: "GM hourly",
-            // id for gm hourly
-            type: "cad9a52d-9b0f-4aed-9cca-3e9568a079f9",
-          },
-        });
-
-        const updatedSubscriberRes = await fetch(`/api/update-subscriber`, {
-          method: "POST",
-          body: JSON.stringify({
-            hasBeenWelcomed: true,
-            account,
-          }),
-          headers: {
-            "content-type": "application/json",
-          },
-        });
-        if (updatedSubscriberRes.status !== 200) {
-          return console.error("Failed to update subscriber");
-        }
-        await updatedSubscriberRes.json();
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }, [handleSendNotification, account]);
-
-  useEffect(() => {
-    if (isSubscribed) {
-      handleIsSubscribed();
-    }
-  }, [isSubscribed, handleIsSubscribed]);
-
   useEffect(() => {
     if (currentAddress && isConnected) {
       changeView("signedIn");
