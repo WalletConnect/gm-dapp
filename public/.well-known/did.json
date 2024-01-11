@@ -3,31 +3,33 @@
     "https://www.w3.org/ns/did/v1",
     "https://w3id.org/security/suites/jws-2020/v1"
   ],
-  "id": "did:web:gm.walletconnect.com",
+  "id": "did:web:gm-dapp-git-debug-gm-dapp-sample-walletconnect1.vercel.app",
   "verificationMethod": [
     {
-      "id": "did:web:gm.walletconnect.com#wc-notify-subscribe-key",
+      "id": "did:web:gm-dapp-git-debug-gm-dapp-sample-walletconnect1.vercel.app#wc-notify-subscribe-key",
       "type": "JsonWebKey2020",
-      "controller": "did:web:gm.walletconnect.com",
+      "controller": "did:web:gm-dapp-git-debug-gm-dapp-sample-walletconnect1.vercel.app",
       "publicKeyJwk": {
         "kty": "OKP",
         "crv": "X25519",
-        "x": "yhqfsnLDlPQVeMHe2FDRMsHrQLtaNU9UUavtkKYdUww"
+        "x": "CQZ-OQIJWDALsWi9aOWls7GCoHNne0JQ8ReylLiqSS0"
       }
     },
     {
-      "id": "did:web:gm.walletconnect.com#wc-notify-authentication-key",
+      "id": "did:web:gm-dapp-git-debug-gm-dapp-sample-walletconnect1.vercel.app#wc-notify-authentication-key",
       "type": "JsonWebKey2020",
-      "controller": "did:web:gm.walletconnect.com",
+      "controller": "did:web:gm-dapp-git-debug-gm-dapp-sample-walletconnect1.vercel.app",
       "publicKeyJwk": {
         "kty": "OKP",
         "crv": "Ed25519",
-        "x": "iCXkprLWNfciaSfRMoM8vy_eIePKeWoQ82_8W5Tu6jo"
+        "x": "ocASxuWRWF1Lbu8kp9hQ1OG-o8oFYHUM6ZgF89DGAhA"
       }
     }
   ],
-  "keyAgreement": ["did:web:gm.walletconnect.com#wc-notify-subscribe-key"],
+  "keyAgreement": [
+    "did:web:gm-dapp-git-debug-gm-dapp-sample-walletconnect1.vercel.app#wc-notify-subscribe-key"
+  ],
   "authentication": [
-    "did:web:gm.walletconnect.com#wc-notify-authentication-key"
+    "did:web:gm-dapp-git-debug-gm-dapp-sample-walletconnect1.vercel.app#wc-notify-authentication-key"
   ]
 }
