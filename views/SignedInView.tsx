@@ -17,6 +17,7 @@ import GmCard from "../components/core/GmCard";
 import Zorb from "../components/core/Zorb";
 import useThemeColor from "../styles/useThemeColors";
 import { useAccount } from "wagmi";
+import DevTimeStamp from "../components/DevTimeStamp";
 
 const SignedInView: React.FC = () => {
   const { account, setAccount } = useW3iAccount();
@@ -44,6 +45,7 @@ const SignedInView: React.FC = () => {
             <Zorb width="64px" height="64px" />
           </Box>
         </Flex>
+	<DevTimeStamp /> 
         <Flex flexDirection="column" alignItems="center" mt="8px" mb="24px">
           {address ? (
             <HStack>

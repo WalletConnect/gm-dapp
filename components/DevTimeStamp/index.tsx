@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic'
 import './DevTimeStamp.module.css'
 import {
   Box,
+  Flex,
   Text,
 } from "@chakra-ui/react";
 
@@ -39,10 +40,12 @@ const DevTimeStamp = () => {
   }, [setTimestamp])
 
   return (
-    <Box className="DevTimeStamp">
-      <Text>{getTimeStampFormatted(timestamp)}</Text>
-    </Box>
+    <Flex justifyContent={"center"} className="DevTimeStamp">
+      <span>{getTimeStampFormatted(timestamp)}</span>
+    </Flex>
   )
 }
 
-export default dynamic(() => Promise.resolve(DevTimeStamp));
+export default dynamic(() => Promise.resolve(DevTimeStamp), {
+  ssr: false
+});

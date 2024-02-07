@@ -14,6 +14,7 @@ import SignedInView from "../views/SignedInView";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { useAccount } from "wagmi";
 import useSendNotification from "../utils/useSendNotification";
+import DevTimeStamp from "../components/DevTimeStamp";
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
 
