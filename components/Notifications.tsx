@@ -120,9 +120,14 @@ function Notifications() {
                     </Alert>
                   ))
               )}
-	      <GmButton onClick={fetchNextPage}>
-  Load next notifications
-</GmButton>
+	      <Flex justifyContent="center">
+	        <GmButton
+                  leftIcon={<NotificationsIcon isDisabled={!isSubscribed} />}
+                  onClick={fetchNextPage}
+	        >
+                  Load next notifications
+                </GmButton>
+              </Flex>
             </Flex>
 
           </ModalBody>
