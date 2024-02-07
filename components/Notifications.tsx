@@ -30,7 +30,7 @@ import useSendNotification from "../utils/useSendNotification";
 import { useAccount } from "wagmi";
 
 function Notifications() {
-  const { data: notifications } = useNotifications(5, true)
+  const { data: notifications, fetchNextPage } = useNotifications(5, true)
   const { data: types } = useNotificationTypes()
 
   const { address }  = useAccount();
@@ -120,7 +120,11 @@ function Notifications() {
                     </Alert>
                   ))
               )}
+	      <GmButton onClick={fetchNextPage}>
+  Load next notifications
+</GmButton>
             </Flex>
+
           </ModalBody>
         </ModalContent>
       </Modal>

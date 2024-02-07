@@ -29,7 +29,7 @@ createWeb3Modal({ wagmiConfig, projectId, chains });
 
 initWeb3InboxClient({
   projectId,
-  allApps: true,
+  allApps: process.env.NODE_ENV === 'development'? true : false,
   domain: "gm.walletconnect.com",
 })
 
