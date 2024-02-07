@@ -1,5 +1,12 @@
 import { Flex, Spinner, Text } from "@chakra-ui/react";
-import { useManageSubscription, useW3iAccount } from "@web3inbox/widget-react";
+import {
+  useSubscribe,
+  useUnsubscribe,
+  useSubscription,
+  useRegister,
+  usePrepareRegistration,
+  useWeb3InboxAccount
+} from "@web3inbox/react";
 import React, { useCallback, useEffect, useState } from "react";
 import useSendNotification from "../utils/useSendNotification";
 import GmButton from "./core/GmButton";
@@ -8,7 +15,7 @@ import SubscribeIcon from "./core/SubscribeIcon";
 import UnsubscribeIcon from "./core/UnsubscribeIcon";
 import Preferences from "./Preferences";
 import Notifications from "./Notifications";
-import { useSignMessage } from "wagmi";
+import { useAccount, useSignMessage } from "wagmi";
 import useThemeColor from "../styles/useThemeColors";
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
@@ -16,42 +23,48 @@ if (!projectId) {
   throw new Error("You need to provide NEXT_PUBLIC_PROJECT_ID env variable");
 }
 
-const PushSubscription = ({ address }: { address: string }) => {
-  const { account, register, isRegistered, isRegistering } = useW3iAccount();
+const PushSubscription = () => {
+  const { prepareRegistration } = usePrepareRegistration();
+  const { register, isLoading: isRegistering} = useRegister();
+  const { isRegistered } = useWeb3InboxAccount()
+  const { address } = useAccount()
   const { actionTextColor } = useThemeColor();
-  const [cancelledRegistry, setCancelledRegistry] = useState(false);
 
-  const {
-    isSubscribed,
-    subscribe,
-    unsubscribe,
-    isSubscribing,
-    isUnsubscribing,
-  } = useManageSubscription(account);
+  const { data: subscription } = useSubscription()
+  const isSubscribed = Boolean(subscription)
+
+  const {subscribe, isLoading: isSubscribing} = useSubscribe()
+  const {unsubscribe, isLoading: isUnsubscribing} = useUnsubscribe()
+
   const { handleSendNotification, isSending } = useSendNotification();
   
   const { signMessageAsync } = useSignMessage();
 
-  const handleRegister = useCallback(() => {
-    setCancelledRegistry(false);
+  const handleRegister = useCallback(async () => {
     console.log("attempting to register")
-    register((m) => signMessageAsync({message: m})).catch((m) => {
-      console.error(m);
-      setCancelledRegistry(true);
-    });
-  }, [register, signMessageAsync])
 
-  useEffect(() => {
-    if(!isRegistered) {
-      handleRegister()
+    if(!address) {
+      return;
     }
-  }, [register, signMessageAsync, isRegistered])
+
+    const { message, registerParams } = await prepareRegistration()
+    try {
+      const signature = await signMessageAsync({message});
+      register({registerParams, signature})
+    }
+    catch(e) {
+      console.error(e)
+    }
+
+  }, [register, address, signMessageAsync, prepareRegistration])
 
   const handleSubscribe = useCallback(() => {
     if(isRegistered) {
       return subscribe()
     }
   }, [subscribe, isRegistered])
+
+  console.log({isRegistered})
 
   if(!isRegistered) {
     return (
@@ -66,15 +79,13 @@ const PushSubscription = ({ address }: { address: string }) => {
         >
 	  Sign the message to allow subscribing
         </Text>
-	{cancelledRegistry ? (
 	  <GmButton
             leftIcon={<SubscribeIcon />}
-            isLoading={false}
+            isLoading={isRegistering}
             onClick={handleRegister}
 	  >
 	    Register
 	  </GmButton>
-	) : <Spinner />}
       </Flex>
     )
   }
@@ -103,11 +114,12 @@ const PushSubscription = ({ address }: { address: string }) => {
       <GmButton
         leftIcon={<SendIcon isDisabled={!isSubscribed || isSending} />}
         onClick={async () => {
-          if (!account) {
+          if (!address) {
             return;
           }
+
           return handleSendNotification({
-            account,
+            account: `eip155:1:${address}`,
             notification: {
               title: "gm!",
               body: "This is a test notification",

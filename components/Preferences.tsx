@@ -16,10 +16,9 @@ import {
 import React, { useEffect } from "react";
 import GmButton from "./core/GmButton";
 import {
-  useManageSubscription,
-  useSubscriptionScopes,
-  useW3iAccount,
-} from "@web3inbox/widget-react";
+  useNotificationTypes,
+  useSubscription,
+} from "@web3inbox/react";
 import SettingsIcon from "./core/SettingsIcon";
 import useThemeColor from "../styles/useThemeColors";
 import { useForm } from "react-hook-form";
@@ -27,10 +26,12 @@ import StatusIcon from "./core/StatusIcon";
 import ToastWrapper from "./core/ToastWrapper";
 
 function Preferences() {
-  const { account } = useW3iAccount();
 
-  const { isSubscribed } = useManageSubscription(account);
-  const { scopes, updateScopes } = useSubscriptionScopes(account);
+  const { data: subscription } = useSubscription();
+  const isSubscribed = Boolean(subscription)
+
+  const { data: types, update } = useNotificationTypes();
+
   const {
     isOpen: isPreferencesOpen,
     onOpen: onOpenPreferences,
@@ -47,18 +48,18 @@ function Preferences() {
   const toast = useToast();
 
   useEffect(() => {
-    Object.entries(scopes).forEach(([scopeKey, scope]) => {
+    Object.entries(types ?? {}).forEach(([scopeKey, scope]) => {
       const s: any = scope;
       setValue(scopeKey, s.enabled);
     });
-  }, [scopes, setValue]);
+  }, [types, setValue]);
 
   const onSubmitPreferences = handleSubmit(async (formData) => {
     const enabledScopes = Object.entries(formData)
       .filter(([_, isEnabled]) => isEnabled)
       .map(([key]) => key);
     try {
-      const isUpdated = await updateScopes(enabledScopes);
+      const isUpdated = await update(enabledScopes);
       if (isUpdated) {
         toast({
           status: isUpdated ? "success" : "error",
@@ -121,7 +122,7 @@ function Preferences() {
           <ModalCloseButton rounded="full" mt={2} mr="12px" />
 
           <ModalBody display="flex" gap="10px" flexDir="column">
-            {Object.entries(scopes)?.map(([scopeId, scope]) => {
+            {Object.entries(types ?? {})?.map(([scopeId, scope]) => {
               return (
                 <Flex
                   key={scopeId}

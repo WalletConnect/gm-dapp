@@ -10,6 +10,8 @@ import Footer from "../components/core/Footer";
 import { PROJECT_METADATA } from "../utils/constants";
 import Head from "next/head";
 
+import { initWeb3InboxClient } from '@web3inbox/react'
+
 // 1. Get projectID at https://cloud.walletconnect.com
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
 if (!projectId) {
@@ -24,6 +26,12 @@ const wagmiConfig = defaultWagmiConfig({
 });
 
 createWeb3Modal({ wagmiConfig, projectId, chains });
+
+initWeb3InboxClient({
+  projectId,
+  allApps: true,
+  domain: "gm.walletconnect.com",
+})
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
