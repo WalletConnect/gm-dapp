@@ -9,6 +9,7 @@ import { theme } from "../styles/theme";
 import Footer from "../components/core/Footer";
 import { PROJECT_METADATA } from "../utils/constants";
 import Head from "next/head";
+import DevTimeStamp from "../components/DevTimeStamp";
 
 // 1. Get projectID at https://cloud.walletconnect.com
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
@@ -56,6 +57,7 @@ function MyApp({ Component, pageProps }: AppProps) {
               </GridItem>
               <Flex justifyContent="center">
                 <GridItem area={"main"} justifyContent="center">
+		  <DevTimeStamp />
                   <Component {...pageProps} />
                 </GridItem>
               </Flex>
