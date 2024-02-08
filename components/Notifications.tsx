@@ -125,7 +125,7 @@ function Notifications() {
                   leftIcon={<NotificationsIcon isDisabled={!isSubscribed} />}
                   onClick={fetchNextPage}
 	        >
-                  Load next notifications
+                  Load more notifications
                 </GmButton>
               </Flex>
             </Flex>

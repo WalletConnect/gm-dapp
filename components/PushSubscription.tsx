@@ -70,8 +70,6 @@ const PushSubscription = () => {
     }
   }, [subscribe, isRegistered])
 
-  console.log({isRegistered})
-
   if(!isRegistered) {
     return (
       <Flex align="center" justify="center" flexDirection="column" gap={2} mb="24px">
