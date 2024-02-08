@@ -11,6 +11,7 @@ import {
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import GmCard from "../components/core/GmCard";
 import useThemeColor from "../styles/useThemeColors";
+import DevTimeStamp from "../components/DevTimeStamp";
 
 const DefaultView = () => {
   const { colorMode } = useColorMode();
@@ -44,6 +45,7 @@ const DefaultView = () => {
           >
             GM Dapp Sign In
           </Heading>
+	  <DevTimeStamp /> 
         </Box>
         <Divider borderColor={dividerColor} />
 

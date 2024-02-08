@@ -12,30 +12,36 @@ import {
   AlertDescription,
   AlertIcon,
   AlertTitle,
-  CloseButton,
   Avatar,
+  Spinner,
 } from "@chakra-ui/react";
 import React from "react";
 import GmButton from "./core/GmButton";
 import {
-  useManageSubscription,
-  useMessages,
-  useW3iAccount,
-} from "@web3inbox/widget-react";
+  useNotifications,
+  useNotificationTypes,
+  useSubscription,
+} from "@web3inbox/react";
 import Link from "next/link";
 
 import useThemeColor from "../styles/useThemeColors";
 import NotificationsIcon from "./core/NotificationsIcon";
 import SendIcon from "./core/SendIcon";
 import useSendNotification from "../utils/useSendNotification";
+import { useAccount } from "wagmi";
 
 function Notifications() {
-  const { account } = useW3iAccount();
+  const { data: notifications, fetchNextPage, isLoadingNextPage, isLoading: isLoadingNotifications } = useNotifications(5, true)
+  const { data: types } = useNotificationTypes()
 
-  const { isSubscribed } = useManageSubscription(account);
+  const { address }  = useAccount();
+
+  const { data: subscription } = useSubscription();
+
+  const isSubscribed = Boolean(subscription)
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { defaultFontColor, cardBgColor, borderColor } = useThemeColor();
-  const { messages, deleteMessage } = useMessages(account);
   const { handleSendNotification, isSending } = useSendNotification();
   return (
     <>
@@ -63,7 +69,7 @@ function Notifications() {
 
           <ModalBody pb="24px">
             <Flex gap={4} flexDir="column">
-              {!messages?.length ? (
+              {!notifications?.length ? (
                 <Flex flexDir={"column"} alignItems="center" gap={"10px"}>
                   <Text>No messages yet.</Text>
                   <GmButton
@@ -72,11 +78,8 @@ function Notifications() {
                     }
                     border={`solid 1px ${borderColor}`}
                     onClick={async () => {
-                      if (!account) {
-                        return;
-                      }
                       return handleSendNotification({
-                        account,
+                        account: `eip155:1:${address}`,
                         notification: {
                           title: "gm!",
                           body: "This is a test notification",
@@ -95,12 +98,11 @@ function Notifications() {
                   </GmButton>
                 </Flex>
               ) : (
-                messages
-                  .sort((a, b) => b.id - a.id)
-                  .map(({ id, message }) => (
+                notifications
+                  .map(({ id, ...message }) => (
                     <Alert
                       as={Link}
-                      href={message.url}
+                      href={message.url ?? undefined}
                       target="_blank"
                       key={id}
                       status="info"
@@ -115,22 +117,21 @@ function Notifications() {
                           {message.body.split("")}
                         </AlertDescription>
                       </Flex>
-                      <Avatar src={message.icon} />
-                      <CloseButton
-                        alignSelf="flex-start"
-                        position="relative"
-                        rounded="full"
-                        right={-1}
-                        top={-1}
-                        onClick={async (e) => {
-                          e.preventDefault();
-                          deleteMessage(id);
-                        }}
-                      />
+                      <Avatar src={types?.[message.type]?.imageUrls.md} />
                     </Alert>
                   ))
               )}
+	      <Flex justifyContent="center" flexDir="column" alignItems="center">
+                {isLoadingNextPage || isLoadingNextPage? <Spinner /> : null }
+	        <GmButton
+                  leftIcon={<NotificationsIcon isDisabled={!isSubscribed} />}
+                  onClick={fetchNextPage}
+	        >
+                  Load more notifications
+                </GmButton>
+              </Flex>
             </Flex>
+
           </ModalBody>
         </ModalContent>
       </Modal>

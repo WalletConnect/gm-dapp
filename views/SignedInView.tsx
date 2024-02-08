@@ -9,7 +9,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import truncate from "smart-truncate";
-import { useManageSubscription, useW3iAccount } from "@web3inbox/widget-react";
+import { useWeb3InboxAccount, useSubscription } from "@web3inbox/react";
 
 import PushSubscription from "../components/PushSubscription";
 import CopyIcon from "../components/core/CopyIcon";
@@ -17,16 +17,15 @@ import GmCard from "../components/core/GmCard";
 import Zorb from "../components/core/Zorb";
 import useThemeColor from "../styles/useThemeColors";
 import { useAccount } from "wagmi";
+import DevTimeStamp from "../components/DevTimeStamp";
 
 const SignedInView: React.FC = () => {
-  const { account, setAccount } = useW3iAccount();
-  const { isSubscribed } = useManageSubscription(account);
-  const { address } = useAccount({
-    onDisconnect: () => {
-      setAccount("");
-      window.location.reload();
-    },
-  });
+  const { data: subscription } = useSubscription();
+  const isSubscribed = Boolean(subscription)
+
+  const { address } = useAccount();
+
+  useWeb3InboxAccount(`eip155:1:${address}`);
 
   const zorbBorder = useColorModeValue(
     "rgba(6, 43, 43, 0.05)",
@@ -44,6 +43,7 @@ const SignedInView: React.FC = () => {
             <Zorb width="64px" height="64px" />
           </Box>
         </Flex>
+	<DevTimeStamp /> 
         <Flex flexDirection="column" alignItems="center" mt="8px" mb="24px">
           {address ? (
             <HStack>
@@ -78,7 +78,7 @@ const SignedInView: React.FC = () => {
             ? "You are subscribed to GM. Now you can send test notifications from the dApp."
             : "Connect your wallet to the widget and enable notifications first in order to send and receive notifications."}
         </Text>
-        {address && <PushSubscription address={address} />}
+        {address && <PushSubscription />}
       </GmCard>
     </Box>
   );

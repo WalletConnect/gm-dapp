@@ -1,54 +1,33 @@
 "use client";
-import { Flex } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 
 import type { NextPage } from "next";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  useInitWeb3InboxClient,
-  useManageSubscription,
-  useW3iAccount,
-} from "@web3inbox/widget-react";
+  useWeb3InboxAccount,
+  useWeb3InboxClient,
+} from "@web3inbox/react";
 
 import DefaultView from "../views/DefaultView";
 import SignedInView from "../views/SignedInView";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { useAccount } from "wagmi";
-import useSendNotification from "../utils/useSendNotification";
-
-const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
+import dynamic from "next/dynamic";
 
 const Home: NextPage = () => {
   const [view, changeView] = useState<"default" | "qr" | "signedIn">("default");
-  useInitWeb3InboxClient({
-    isLimited: true,
-    projectId,
-    domain: "gm.walletconnect.com",
-  });
 
-  const {
-    account,
-    setAccount,
-  } = useW3iAccount();
-  const { isSubscribed } = useManageSubscription(account);
-  const { address, isConnected } = useAccount({
+  const { data: client } = useWeb3InboxClient()
+  const isReady = Boolean(client);
+
+  const { address: currentAddress, isConnected } = useAccount({
     onDisconnect: () => {
       changeView("default");
     },
   });
-  const [currentAddress, setCurrentAddress] = useState<`0x${string}`>();
-  const { handleSendNotification } = useSendNotification();
   const { close } = useWeb3Modal();
 
-  // We need to set the account as soon as the user is connected
-  useEffect(() => {
-    if (!address) return;
-    setAccount(`eip155:1:${address}`);
-  }, [address, setAccount]);
-
-  useEffect(() => {
-    if (!address) return;
-    setCurrentAddress(address);
-  }, [address]);
+  useWeb3InboxAccount(`eip155:1:${currentAddress}`);
 
   useEffect(() => {
     if (currentAddress && isConnected) {
@@ -56,6 +35,14 @@ const Home: NextPage = () => {
       close();
     }
   }, [currentAddress, changeView, close, isConnected]);
+
+  if(!isReady) {
+    return (
+      <Flex>
+        <span>Loading..</span>
+      </Flex>
+    )
+  }
 
   return (
     <>
@@ -85,4 +72,6 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default dynamic(() => Promise.resolve(Home), {
+  ssr: false
+});
