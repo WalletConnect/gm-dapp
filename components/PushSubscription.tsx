@@ -25,10 +25,12 @@ if (!projectId) {
 
 const PushSubscription = () => {
   const { prepareRegistration } = usePrepareRegistration();
-  const { register, isLoading: isRegistering} = useRegister();
+  const { register } = useRegister();
   const { isRegistered } = useWeb3InboxAccount()
   const { address } = useAccount()
   const { actionTextColor } = useThemeColor();
+
+  const [isRegistering, setIsRegistering] = useState(false)
 
   const { data: subscription } = useSubscription()
   const isSubscribed = Boolean(subscription)
@@ -42,6 +44,7 @@ const PushSubscription = () => {
 
   const handleRegister = useCallback(async () => {
     console.log("attempting to register")
+    setIsRegistering(true)
 
     if(!address) {
       return;
@@ -50,10 +53,13 @@ const PushSubscription = () => {
     const { message, registerParams } = await prepareRegistration()
     try {
       const signature = await signMessageAsync({message});
-      register({registerParams, signature})
+      await register({registerParams, signature})
     }
     catch(e) {
       console.error(e)
+    }
+    finally {
+      setIsRegistering(false)
     }
 
   }, [register, address, signMessageAsync, prepareRegistration])
