@@ -141,7 +141,7 @@ const PushSubscription = () => {
         Send notification
       </GmButton>
       <Notifications />
-      <Preferences />
+      <Preferences isUnsubscribing={isUnsubscribing} />
     </Flex>
   );
 };
