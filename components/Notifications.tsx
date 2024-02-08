@@ -13,6 +13,7 @@ import {
   AlertIcon,
   AlertTitle,
   Avatar,
+  Spinner,
 } from "@chakra-ui/react";
 import React from "react";
 import GmButton from "./core/GmButton";
@@ -30,7 +31,7 @@ import useSendNotification from "../utils/useSendNotification";
 import { useAccount } from "wagmi";
 
 function Notifications() {
-  const { data: notifications, fetchNextPage } = useNotifications(5, true)
+  const { data: notifications, fetchNextPage, isLoadingNextPage, isLoading: isLoadingNotifications } = useNotifications(5, true)
   const { data: types } = useNotificationTypes()
 
   const { address }  = useAccount();
@@ -120,7 +121,8 @@ function Notifications() {
                     </Alert>
                   ))
               )}
-	      <Flex justifyContent="center">
+	      <Flex justifyContent="center" flexDir="column" alignItems="center">
+                {isLoadingNextPage || isLoadingNextPage? <Spinner /> : null }
 	        <GmButton
                   leftIcon={<NotificationsIcon isDisabled={!isSubscribed} />}
                   onClick={fetchNextPage}
