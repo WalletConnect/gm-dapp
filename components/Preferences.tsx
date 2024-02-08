@@ -25,7 +25,7 @@ import { useForm } from "react-hook-form";
 import StatusIcon from "./core/StatusIcon";
 import ToastWrapper from "./core/ToastWrapper";
 
-function Preferences() {
+function Preferences(props: { isUnsubscribing: boolean }) {
 
   const { data: subscription } = useSubscription();
   const isSubscribed = Boolean(subscription)
@@ -105,8 +105,8 @@ function Preferences() {
   return (
     <>
       <GmButton
-        leftIcon={<SettingsIcon isDisabled={!isSubscribed} />}
-        isDisabled={!isSubscribed}
+        leftIcon={<SettingsIcon isDisabled={!isSubscribed || props.isUnsubscribing} />}
+        isDisabled={!isSubscribed || props.isUnsubscribing}
         onClick={onOpenPreferences}
       >
         Preferences

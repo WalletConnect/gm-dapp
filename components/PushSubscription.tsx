@@ -108,7 +108,7 @@ const PushSubscription = () => {
       ) : (
         <GmButton
           leftIcon={<SubscribeIcon />}
-          isDisabled={isSubscribing}
+          isDisabled={isSubscribing || isUnsubscribing}
           isLoading={isSubscribing}
           onClick={handleSubscribe}
         >
@@ -116,7 +116,7 @@ const PushSubscription = () => {
         </GmButton>
       )}
       <GmButton
-        leftIcon={<SendIcon isDisabled={!isSubscribed || isSending} />}
+        leftIcon={<SendIcon isDisabled={!isSubscribed || isSending || !isUnsubscribing} />}
         onClick={async () => {
           if (!address) {
             return;
