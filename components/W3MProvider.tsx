@@ -25,7 +25,11 @@ const wagmiConfig = defaultWagmiConfig({
   enableEmail: true,
 });
 
-export default function W3MProvider({ children }) {
+type W3MProviderProps = {
+  children: React.ReactNode;
+};
+
+export default function W3MProvider({ children }: W3MProviderProps) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
