@@ -11,15 +11,17 @@ const chains = [mainnet] as const;
 
 const queryClient = new QueryClient();
 
+const metadata = {
+  name: "GM dApp",
+  description: "GM dApp is example dApp to test notifications with Web3Inbox",
+  url: "https://gm.walletconnect.com",
+  icons: ["https://avatars.githubusercontent.com/u/37784886"],
+};
+
 const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,
-  metadata: {
-    name: "GM dApp",
-    description: "GM dApp is example dApp to test notifications with Web3Inbox",
-    url: "https://gm.walletconnect.com",
-    icons: ["https://avatars.githubusercontent.com/u/37784886"],
-  },
+  metadata,
   enableEmail: true,
 });
 
@@ -38,7 +40,11 @@ export default function W3MProvider({ children }: W3MProviderProps) {
     return null;
   }
 
-  const modal = createWeb3Modal({ wagmiConfig, projectId });
+  createWeb3Modal({
+    wagmiConfig,
+    projectId,
+    metadata,
+  });
 
   return (
     <WagmiProvider config={wagmiConfig}>
