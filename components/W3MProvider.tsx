@@ -29,6 +29,12 @@ type W3MProviderProps = {
   children: React.ReactNode;
 };
 
+createWeb3Modal({
+  wagmiConfig,
+  projectId,
+  metadata,
+});
+
 export default function W3MProvider({ children }: W3MProviderProps) {
   const [ready, setReady] = useState(false);
 
@@ -36,15 +42,9 @@ export default function W3MProvider({ children }: W3MProviderProps) {
     setReady(true);
   }, []);
 
-  if (!ready || typeof window === "undefined" || !document) {
+  if (!ready) {
     return null;
   }
-
-  createWeb3Modal({
-    wagmiConfig,
-    projectId,
-    metadata,
-  });
 
   return (
     <WagmiProvider config={wagmiConfig}>
