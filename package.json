@@ -15,7 +15,7 @@
     "@emotion/styled": "^11.10.6",
     "@web3inbox/core": "^1.0.2",
     "@web3inbox/react": "^1.0.2",
-    "@web3modal/wagmi": "4.0.4",
+    "@web3modal/wagmi": "4.0.10",
     "drizzle-orm": "^0.25.4",
     "framer-motion": "^10.10.0",
     "lodash-es": "^4.17.21",
